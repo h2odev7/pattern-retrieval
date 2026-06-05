@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PATTERN RETRIEVAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PATTERN RETRIEVAL — faithful to the hand-drawn art
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:       #f0ece0;
+  --cream-light: #f7f4ea;
+  --black:       #1a1c16;
+  --black2:      #141610;
+  --gold:        #f0c84a;
+  --gold-border: #c8a030;
+  --gold-bg:     #e8b830;
+  --cream-border:#c8c490;
+  --text-cream:  #d8dba8;
+  --text-dark:   #1a1c16;
+  --ruler-color: #2a2c22;
+}
+
+html, body {
+  min-height: 100vh;
+  background: #d8d4c4;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 16px 60px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ============================================================
+   OUTER BEZEL — barrel/CRT shape using clip-path + border-radius
+   ============================================================ */
+.bezel {
+  width: 540px;
+  position: relative;
+  /* The barrel/convex-sides shape from the art */
+  background: var(--cream);
+  border-radius: 38px 38px 32px 32px;
+  border: 3px solid #aaa890;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.28),
+    0 2px 8px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  /* Subtle barrel curve illusion via perspective */
+  overflow: visible;
+}
+
+/* Side curve overlays — gives the barrel/convex side effect */
+.bezel::before, .bezel::after {
+  content: '';
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  width: 12px;
+  background: #aaa890;
+  z-index: -1;
+}
+.bezel::before { left: -6px; border-radius: 50% 0 0 50%; }
+.bezel::after  { right: -6px; border-radius: 0 50% 50% 0; }
+
+/* ============================================================
+   TOP BANNER — black, curved bottom edge
+   ============================================================ */
+.top-banner {
+  background: var(--black);
+  border-radius: 35px 35px 0 0;
+  padding: 16px 24px 18px;
+  position: relative;
+  border: 3px solid var(--cream-border);
+  border-bottom: none;
+  /* Curved bottom edge via border-radius on a pseudo */
+  overflow: hidden;
+}
+
+.top-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: -4px; right: -4px;
+  height: 36px;
+  background: var(--black);
+  border-radius: 0 0 50% 50%;
+  z-index: 2;
+}
+
+/* Inner cream border line inside the black banner */
+.banner-inner-border {
+  border: 2px solid var(--cream-border);
+  border-radius: 22px 22px 0 0;
+  padding: 10px 16px 12px;
+}
+
+.banner-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.banner-dash {
+  flex: 1;
+  height: 3px;
+  background: var(--cream-border);
+  border-radius: 2px;
+  max-width: 52px;
+}
+
+.banner-title {
+  font-family: 'Caveat', cursive;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--text-cream);
+  letter-spacing: 5px;
+  line-height: 1;
+  text-shadow: 0 0 1px rgba(216,219,168,0.4);
+}
+
+.banner-sub {
+  font-family: 'Caveat', cursive;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-cream);
+  text-align: center;
+  letter-spacing: 2px;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.banner-pipe { color: var(--cream-border); margin: 0 10px; }
+
+/* ============================================================
+   INSTRUMENT BODY
+   ============================================================ */
+.instrument {
+  background: var(--cream-light);
+  padding: 28px 20px 20px;
+  position: relative;
+  z-index: 1;
+  border-left: 3px solid var(--cream-border);
+  border-right: 3px solid var(--cream-border);
+}
+
+/* ============================================================
+   TOP GAUGE — ruler with tick marks + TARGET LOCKED
+   ============================================================ */
+.gauge-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.gauge-numbers {
+  display: flex;
+  gap: 0;
+  align-items: flex-end;
+  font-family: 'Caveat', cursive;
+  font-size: 12px;
+  color: var(--ruler-color);
+  margin-bottom: 1px;
+}
+
+.gauge-numbers span {
+  width: 56px;
+  text-align: center;
+}
+
+.gauge-ruler-wrap {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 24px;
+  border-bottom: 2.5px solid var(--ruler-color);
+  width: 340px;
+}
+
+.tick {
+  background: var(--ruler-color);
+  display: inline-block;
+  width: 2px;
+  margin: 0 2.2px;
+  align-self: flex-end;
+}
+.tick.t0 { height: 18px; }
+.tick.t1 { height: 10px; }
+.tick.t2 { height: 14px; }
+
+.target-locked-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--ruler-color);
+  letter-spacing: 3px;
+}
+
+.tl-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ruler-color);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   MAIN GRID AREA — with side rulers
+   ============================================================ */
+.grid-section {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 6px;
+  gap: 0;
+}
+
+/* LEFT RULER */
+.left-ruler {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 8px;
+  flex-shrink: 0;
+  width: 52px;
+}
+
+.arm-label {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--ruler-color);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  align-self: flex-start;
+  margin-left: 4px;
+}
+
+.ruler-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.ruler-numbers {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.ruler-bracket {
+  width: 16px;
+  border-top: 2.5px solid var(--ruler-color);
+  border-right: 2.5px solid var(--ruler-color);
+  border-bottom: 2.5px solid var(--ruler-color);
+  border-radius: 0 5px 5px 0;
+  align-self: stretch;
+}
+
+.rnum {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--ruler-color);
+  line-height: 1;
+  text-align: right;
+  padding-right: 2px;
+}
+
+/* ============================================================
+   CROSSWORD GRID
+   ============================================================ */
+.cw-container {
+  flex: 1;
+}
+
+.cw-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 44px);
+  grid-template-rows: repeat(8, 44px);
+  gap: 0;
+  border: 2.5px solid #555;
+}
+
+.cell {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid #888;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter 0.1s;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* WALL cells — solid black */
+.cell.wall {
+  background: var(--black);
+  border-color: var(--black2);
+  cursor: default;
+}
+
+/* EMPTY playable cells */
+.cell.playable {
+  background: #faf7ed;
+  border-color: #999;
+}
+
+/* GOLD column (E spine) */
+.cell.gold {
+  background: var(--gold);
+  border-color: var(--gold-border);
+}
+
+/* HINT cells — pre-revealed with metallic letter style */
+.cell.hint {
+  background: var(--black);
+  border-color: #333;
+  cursor: default;
+}
+
+/* Selected cell */
+.cell.selected {
+  outline: 3px solid #2255cc;
+  outline-offset: -3px;
+  z-index: 5;
+}
+
+/* Word highlight */
+.cell.word-hl.playable  { background: #dce8f4; }
+.cell.word-hl.gold      { background: #d4a828; }
+
+/* Correct guess */
+.cell.correct.playable  { background: #c8eaaa; border-color: #4a9a2a; }
+.cell.correct.gold      { background: #c8a820; border-color: #a88010; }
+
+/* Wrong flash */
+.cell.wrong { animation: cellShake 0.25s ease; }
+@keyframes cellShake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-5px); }
+  75%      { transform: translateX(5px); }
+}
+
+/* Revealed by hint */
+.cell.revealed.playable { background: #fff0b0; border-color: #c8a030; }
+
+/* Clue number in corner */
+.cell-num {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: #555;
+  line-height: 1;
+  z-index: 2;
+}
+
+/* Cell letter */
+.cell-letter {
+  font-family: 'Caveat', cursive;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Hint letters (S, E, I, T on black cells) — metallic/silver-gold style */
+.cell.hint .cell-letter {
+  color: #d0d0c0;
+  text-shadow:
+    1px 1px 0 #888,
+    -1px -1px 0 #fff8,
+    0 0 4px rgba(200,200,180,0.3);
+  font-size: 30px;
+}
+
+/* Gold E column hint letters */
+.cell.gold.hint .cell-letter {
+  color: #8a5a00;
+  text-shadow: 1px 1px 0 #c89020, -1px -1px 0 rgba(255,240,150,0.5);
+}
+
+/* Player typed letters */
+.cell.correct .cell-letter { color: #1a5a1a; }
+.cell.revealed .cell-letter { color: #7a5500; }
+.cell.playable .cell-letter { color: #1a1c16; }
+
+/* ============================================================
+   BOTTOM BANNER
+   ============================================================ */
+.bottom-banner {
+  background: var(--black);
+  border-radius: 0 0 29px 29px;
+  padding: 14px 24px 16px;
+  border: 3px solid var(--cream-border);
+  border-top: none;
+  position: relative;
+  z-index: 1;
+  /* Curved top edge */
+  overflow: hidden;
+}
+
+.bottom-banner::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: -4px; right: -4px;
+  height: 32px;
+  background: var(--black);
+  border-radius: 50% 50% 0 0;
+  z-index: 0;
+}
+
+.bottom-inner-border {
+  border: 2px solid var(--cream-border);
+  border-radius: 0 0 18px 18px;
+  padding: 8px 16px 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.bottom-readout {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-cream);
+  text-align: center;
+  letter-spacing: 4px;
+}
+
+/* ============================================================
+   BELOW DEVICE — stats, keyboard, clues
+   ============================================================ */
+.below-device {
+  width: 540px;
+  margin-top: 0;
+}
+
+.stats-row {
+  background: #e8e4d4;
+  border: 2px solid #c0bc9a;
+  border-top: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 16px;
+  border-radius: 0 0 8px 8px;
+}
+
+.stat-item {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.stat-val { display: block; font-size: 15px; font-weight: bold; color: #1a1c16; margin-top: 1px; }
+.stat-val.red  { color: #aa2222; }
+.stat-val.gold { color: #8a6000; }
+.stat-val.grn  { color: #1a6a1a; }
+
+.msg-bar {
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 16px;
+  background: #f0ece0;
+  min-height: 28px;
+  color: #555;
+  border-left: 2px solid #c0bc9a;
+  border-right: 2px solid #c0bc9a;
+}
+.msg-bar.ok   { color: #1a6a1a; }
+.msg-bar.err  { color: #aa2222; }
+.msg-bar.info { color: #885500; }
+
+/* KEYBOARD */
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  padding: 10px 16px;
+  background: #e8e4d4;
+  border: 2px solid #c0bc9a;
+  border-top: 1px solid #c0bc9a;
+  margin-top: 0;
+}
+
+.key {
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
+  font-weight: 700;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: #f5f1e4;
+  border: 1.5px solid #aaa890;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #1a1c16;
+  transition: all 0.1s;
+  line-height: 1;
+}
+.key:hover          { background: #e8e4d4; border-color: #666; }
+.key.used           { color: #bbb; border-color: #ddd; background: #eee; }
+.key.correct-key    { color: #1a6a1a; border-color: #4a8a2a; background: #dff0d0; }
+
+/* BUTTONS */
+.btn-row {
+  display: flex; gap: 8px; justify-content: center;
+  padding: 8px 16px 10px;
+  background: #e8e4d4;
+  border: 2px solid #c0bc9a;
+  border-top: none;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  background: #f5f1e4;
+  border: 1.5px solid #999;
+  color: #333;
+  padding: 6px 14px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  transition: all 0.1s;
+}
+.btn:hover          { background: #e0dccb; border-color: #555; }
+.btn.primary        { border-color: #2a7a2a; color: #1a5a1a; background: #e4f0e0; }
+.btn.warn           { border-color: #aa8800; color: #664400; }
+.btn.danger         { border-color: #aa3300; color: #661100; }
+
+/* CLUES */
+.clues-section {
+  display: flex;
+  gap: 0;
+  background: #f5f1e4;
+  border: 2px solid #c0bc9a;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.clue-col {
+  flex: 1;
+  padding: 10px 14px;
+}
+.clue-col:first-child {
+  border-right: 1px solid #c0bc9a;
+}
+
+.clue-head {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: #777;
+  letter-spacing: 3px;
+  border-bottom: 1px solid #c0bc9a;
+  padding-bottom: 4px;
+  margin-bottom: 7px;
+}
+
+.clue-item {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10.5px;
+  color: #444;
+  padding: 3px 4px;
+  margin: 2px 0;
+  cursor: pointer;
+  border-left: 2.5px solid transparent;
+  line-height: 1.5;
+  transition: all 0.1s;
+  border-radius: 0 2px 2px 0;
+}
+.clue-item:hover      { background: #ede9d8; border-left-color: #888; }
+.clue-item.active     { border-left-color: #2255cc; background: #e4ecf8; color: #1a1a55; }
+.clue-item.done       { color: #aaa; text-decoration: line-through; }
+.clue-num             { color: #b8860b; margin-right: 5px; font-weight: bold; }
+
+/* WIN OVERLAY */
+.win-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,18,10,0.92);
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.win-overlay.show { display: flex; }
+.win-title {
+  font-family: 'Caveat', cursive;
+  font-size: 48px;
+  font-weight: 700;
+  color: #d8dba8;
+  letter-spacing: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.win-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: #c8c490;
+  letter-spacing: 2px;
+  text-align: center;
+  line-height: 2;
+  margin-bottom: 28px;
+}
+.win-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  background: transparent;
+  border: 2px solid #c8c490;
+  color: #d8dba8;
+  padding: 12px 28px;
+  cursor: pointer;
+  letter-spacing: 3px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.win-btn:hover { background: rgba(200,196,144,0.15); }
+
+</style>
+</head>
+<body>
+
+<!-- WIN OVERLAY -->
+<div class="win-overlay" id="winOverlay">
+  <div class="win-title">PATTERN RESTORED</div>
+  <div class="win-sub" id="winSub">CONVERGENCE COMPLETE<br>SCORE: 0000 | TIME: 00:00 | ERRORS: 00</div>
+  <button class="win-btn" onclick="newRun()">▸ NEXT RUN</button>
+</div>
+
+<!-- BEZEL DEVICE -->
+<div style="display:flex;flex-direction:column;align-items:center;">
+
+  <div class="bezel">
+
+    <!-- TOP BANNER -->
+    <div class="top-banner">
+      <div class="banner-inner-border">
+        <div class="banner-title-row">
+          <div class="banner-dash"></div>
+          <div class="banner-title">PATTERN RETRIEVAL</div>
+          <div class="banner-dash"></div>
+        </div>
+        <div class="banner-sub">
+          CONVERGENCE COMPLETE <span class="banner-pipe">|</span> PATTERN RESTORED
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTRUMENT BODY -->
+    <div class="instrument">
+
+      <!-- GAUGE -->
+      <div class="gauge-section">
+        <div class="gauge-numbers">
+          <span style="width:28px;font-size:11px;">⁰⁰</span>
+          <span>01</span>
+          <span>02</span>
+          <span>03</span>
+          <span>04</span>
+        </div>
+        <div class="gauge-ruler-wrap">
+          <!-- tick marks mimicking the art -->
+          <span class="tick t0"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t2"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t0"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t2"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t0"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t2"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t0"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t2"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t0"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t2"></span><span class="tick t1"></span><span class="tick t1"></span>
+          <span class="tick t0"></span>
+        </div>
+        <div class="target-locked-row">
+          <div class="tl-dot"></div>
+          <span>TARGET LOCKED</span>
+          <div class="tl-dot"></div>
+        </div>
+      </div>
+
+      <!-- GRID + SIDE RULER -->
+      <div class="grid-section">
+
+        <!-- LEFT RULER -->
+        <div class="left-ruler">
+          <div class="arm-label">· ARM</div>
+          <div class="ruler-body">
+            <div class="ruler-numbers" id="rulerNums">
+              <!-- filled by JS to match grid height -->
+            </div>
+            <div class="ruler-bracket" id="rulerBracket"></div>
+          </div>
+        </div>
+
+        <!-- CROSSWORD GRID -->
+        <div class="cw-container">
+          <div class="cw-grid" id="cwGrid"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM BANNER -->
+    <div class="bottom-banner">
+      <div class="bottom-inner-border">
+        <div class="bottom-readout" id="bottomReadout">— 1176 | RUN: 0001 | VT100&nbsp;&nbsp; STO:·</div>
+      </div>
+    </div>
+
+  </div><!-- /bezel -->
+
+  <!-- BELOW DEVICE -->
+  <div class="below-device">
+
+    <div class="stats-row">
+      <div class="stat-item">SCORE<span class="stat-val grn" id="scoreEl">0000</span></div>
+      <div class="stat-item">ERRORS<span class="stat-val red" id="errEl">00</span></div>
+      <div class="stat-item">HINTS<span class="stat-val gold" id="hintEl">03</span></div>
+      <div class="stat-item">TIME<span class="stat-val" id="timeEl">00:00</span></div>
+      <div class="stat-item">PROGRESS<span class="stat-val" id="progEl">0/0</span></div>
+    </div>
+
+    <div class="msg-bar" id="msgBar">SELECT A CELL — TYPE TO FILL</div>
+
+    <div class="keyboard" id="keyboard"></div>
+
+    <div class="btn-row">
+      <button class="btn primary" onclick="doHint()">▸ HINT [-1]</button>
+      <button class="btn warn"    onclick="doReveal()">REVEAL WORD [-50]</button>
+      <button class="btn danger"  onclick="newRun()">NEW RUN</button>
+    </div>
+
+    <div class="clues-section">
+      <div class="clue-col">
+        <div class="clue-head">— ACROSS</div>
+        <div id="cluesA"></div>
+      </div>
+      <div class="clue-col">
+        <div class="clue-head">— DOWN</div>
+        <div id="cluesD"></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /outer flex -->
+
+<script>
+/* ============================================================
+   EXACT GRID from the hand-drawn art
+   8 cols × 8 rows
+
+   Legend for LAYOUT grid:
+     #  = black wall
+     S/I/T = hint letter on black background (col 1)
+     E  = hint letter on gold background (col 2, the spine)
+     .  = empty playable white cell
+
+   Reading the art carefully:
+   Row 0: #  S  E  .  d  .  #  #     (SEND across: S=hint, E=gold/hint, n=player, d=player)
+   Row 1: #  .  E  .  .  #  .  .
+   Row 2: #  I  E  .  #  #  .  .     (I hint on black)
+   Row 3: #  #  E  .  .  .  .  .
+   Row 4: #  T  E  .  #  .  #  .     (T hint on black)
+   Row 5: #  .  E  .  .  .  .  .
+   Row 6: #  #  .  .  .  #  #  .
+   Row 7: #  #  #  .  .  .  #  #
+
+   The ANSWER grid (what player must ultimately fill):
+   I'll define a real crossword with SEND IT theme.
+   ============================================================ */
+
+const ROWS = 8, COLS = 8;
+
+// W=wall, H=hint(black bg letter), G=gold hint, P=playable
+// Combined with letter value
+const LAYOUT = [
+//   0     1     2     3     4     5     6     7
+  [ 'W',  'HS', 'GE', 'P',  'HP', 'P',  'W',  'W'  ], // row 0
+  [ 'W',  'P',  'GE', 'P',  'P',  'W',  'P',  'P'  ], // row 1
+  [ 'W',  'HI', 'GE', 'P',  'W',  'W',  'P',  'P'  ], // row 2
+  [ 'W',  'W',  'GE', 'P',  'P',  'P',  'P',  'P'  ], // row 3
+  [ 'W',  'HT', 'GE', 'P',  'W',  'P',  'W',  'P'  ], // row 4
+  [ 'W',  'P',  'GE', 'P',  'P',  'P',  'P',  'P'  ], // row 5
+  [ 'W',  'W',  'P',  'P',  'P',  'W',  'W',  'P'  ], // row 6
+  [ 'W',  'W',  'W',  'P',  'P',  'P',  'W',  'W'  ], // row 7
+];
+
+// Full answer letters (# for walls, letter for every cell)
+const ANSWERS = [
+  ['#','S','E','N','D','I','#','#'],
+  ['#','I','E','O','T','#','T','O'],
+  ['#','I','E','D','#','#','E','N'],
+  ['#','#','E','E','R','R','M','P'],
+  ['#','T','E','P','#','O','#','O'],
+  ['#','E','E','T','H','R','M','N'],
+  ['#','#','T','O','P','#','#','E'],
+  ['#','#','#','P','Y','X','#','#'],
+];
+
+// Clue definitions
+const CLUE_DATA = {
+  across: [
+    { num:1,  clue:"Transmit outward", row:0, col:1, len:5 },
+    { num:3,  clue:"Knowledge node in a network", row:1, col:1, len:4 },
+    { num:5,  clue:"Repeat signal — loop it again", row:2, col:1, len:2 },
+    { num:7,  clue:"Signal prefix — do this first", row:3, col:3, len:5 },
+    { num:9,  clue:"Initiate — send without delay", row:4, col:1, len:2 },
+    { num:11, clue:"Thermal noise band (physics)", row:5, col:1, len:6 },
+    { num:13, clue:"Peak of the signal wave", row:6, col:2, len:3 },
+    { num:15, clue:"Pixel copy operation (abbr)", row:7, col:3, len:3 },
+  ],
+  down: [
+    { num:1,  clue:"Letters S·I·T going down — arm & send", row:0, col:1, len:6 },
+    { num:2,  clue:"The E-spine — gold convergence column", row:0, col:2, len:6 },
+    { num:4,  clue:"Data point origin stream", row:0, col:3, len:7 },
+    { num:6,  clue:"Transmission bit — first signal data", row:0, col:4, len:4 },
+    { num:8,  clue:"Layer in the signal stack", row:1, col:6, len:6 },
+    { num:10, clue:"Adjacent transmission node", row:1, col:7, len:6 },
+    { num:12, clue:"Routing table entry (abbr)", row:3, col:5, len:4 },
+  ]
+};
+
+// ============================================================
+//   STATE
+// ============================================================
+let cells = [];
+let wordMap = {}, cellWords = {};
+let selected = null, direction = 'across';
+let errors = 0, hints = 3, score = 0, run = 1;
+let timerSec = 0, timerInt = null;
+let completedWords = new Set();
+let usedLetters = new Set(), correctLetters = new Set();
+
+// Build cell objects
+function initCells() {
+  cells = [];
+  for (let r = 0; r < ROWS; r++) {
+    cells[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      const lay = LAYOUT[r][c];
+      const ans = ANSWERS[r][c];
+      const isWall   = lay === 'W';
+      const isHint   = lay.startsWith('H') || lay.startsWith('G');
+      const isGold   = lay.startsWith('G');
+      const letter   = isWall ? '' : ans;
+      cells[r][c] = {
+        wall: isWall,
+        isHint, isGold,
+        letter,
+        guess: '',
+        correct: isHint,   // hints start as correct
+        revealed: false,
+      };
+    }
+  }
+}
+
+// Build word → cells mapping
+function buildWordMap() {
+  wordMap = {}; cellWords = {};
+  const all = [
+    ...CLUE_DATA.across.map(c => ({...c, dir:'across'})),
+    ...CLUE_DATA.down.map(c => ({...c, dir:'down'})),
+  ];
+  all.forEach(cl => {
+    const k = `${cl.num}-${cl.dir}`;
+    wordMap[k] = { ...cl, cells: [] };
+    for (let i = 0; i < cl.len; i++) {
+      const wr = cl.dir === 'across' ? cl.row : cl.row + i;
+      const wc = cl.dir === 'across' ? cl.col + i : cl.col;
+      if (wr < ROWS && wc < COLS && !cells[wr][wc].wall) {
+        wordMap[k].cells.push({ r: wr, c: wc });
+        const ck = `${wr},${wc}`;
+        if (!cellWords[ck]) cellWords[ck] = [];
+        cellWords[ck].push(k);
+      }
+    }
+  });
+}
+
+// Clue numbers that start at each cell
+function getClueStartMap() {
+  const m = {};
+  [...CLUE_DATA.across, ...CLUE_DATA.down].forEach(cl => {
+    const k = `${cl.row},${cl.col}`;
+    if (!m[k] || m[k] > cl.num) m[k] = cl.num;
+  });
+  return m;
+}
+
+// ============================================================
+//   RENDER
+// ============================================================
+function renderGrid() {
+  const g = document.getElementById('cwGrid');
+  g.innerHTML = '';
+  const clueStarts = getClueStartMap();
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = cells[r][c];
+      const div = document.createElement('div');
+      div.className = 'cell';
+      div.dataset.r = r;
+      div.dataset.c = c;
+
+      if (cell.wall) {
+        div.classList.add('wall');
+      } else {
+        // Base type
+        if (cell.isGold)       div.classList.add('gold');
+        else if (cell.isHint)  div.classList.add('hint');
+        else                   div.classList.add('playable');
+
+        // State overlays
+        if (!cell.isHint) {
+          if (cell.correct)       div.classList.add('correct');
+          else if (cell.revealed) div.classList.add('revealed');
+        }
+
+        // Clue number
+        const ck = `${r},${c}`;
+        if (clueStarts[ck]) {
+          const ni = document.createElement('span');
+          ni.className = 'cell-num';
+          ni.textContent = clueStarts[ck];
+          div.appendChild(ni);
+        }
+
+        // Letter
+        const lt = document.createElement('span');
+        lt.className = 'cell-letter';
+        if (cell.isHint || cell.correct || cell.revealed) {
+          lt.textContent = cell.letter;
+        } else {
+          lt.textContent = cell.guess || '';
+        }
+        div.appendChild(lt);
+        div.addEventListener('click', () => clickCell(r, c));
+      }
+
+      g.appendChild(div);
+    }
+  }
+
+  // Ruler height sync
+  const gridH = ROWS * 44;
+  document.getElementById('rulerBracket').style.height = gridH + 'px';
+  renderRulerNums(gridH);
+
+  highlightWord();
+  updateProgress();
+}
+
+function renderRulerNums(gridH) {
+  const el = document.getElementById('rulerNums');
+  el.innerHTML = '';
+  // 7 labels: 0, 01, 1, 02, 2, 03, 3 — spaced evenly across gridH
+  const labels = ['0','01','1','02','2','03','3'];
+  labels.forEach((lbl, i) => {
+    const span = document.createElement('div');
+    span.className = 'rnum';
+    span.textContent = lbl;
+    span.style.position = 'absolute';
+    span.style.top = Math.round((i / (labels.length - 1)) * (gridH - 20)) + 'px';
+    el.appendChild(span);
+  });
+  el.style.position = 'relative';
+  el.style.height = gridH + 'px';
+}
+
+function highlightWord() {
+  document.querySelectorAll('.cell').forEach(el => {
+    el.classList.remove('word-hl', 'selected');
+    el.style.outline = '';
+  });
+  if (!selected) return;
+
+  const { r, c } = selected;
+  const ck = `${r},${c}`;
+  const wks = cellWords[ck] || [];
+  const ak = wks.find(k => k.endsWith(direction)) || wks[0];
+
+  if (ak && wordMap[ak]) {
+    wordMap[ak].cells.forEach(({ r: wr, c: wc }) => {
+      const idx = wr * COLS + wc;
+      const el = document.querySelectorAll('.cell')[idx];
+      if (el && !el.classList.contains('wall')) el.classList.add('word-hl');
+    });
+  }
+
+  const selIdx = r * COLS + c;
+  const selEl = document.querySelectorAll('.cell')[selIdx];
+  if (selEl) {
+    selEl.classList.add('selected');
+    selEl.style.outline = '3px solid #2255cc';
+    selEl.style.outlineOffset = '-3px';
+  }
+}
+
+function renderClues() {
+  const aEl = document.getElementById('cluesA');
+  const dEl = document.getElementById('cluesD');
+  aEl.innerHTML = ''; dEl.innerHTML = '';
+
+  CLUE_DATA.across.forEach(cl => {
+    const k = `${cl.num}-across`;
+    const d = document.createElement('div');
+    d.className = 'clue-item';
+    d.id = 'ci-' + k;
+    if (completedWords.has(k)) d.classList.add('done');
+    d.innerHTML = `<span class="clue-num">${cl.num}.</span>${cl.clue}`;
+    d.onclick = () => { direction = 'across'; clickCell(cl.row, cl.col); };
+    aEl.appendChild(d);
+  });
+
+  CLUE_DATA.down.forEach(cl => {
+    const k = `${cl.num}-down`;
+    const d = document.createElement('div');
+    d.className = 'clue-item';
+    d.id = 'ci-' + k;
+    if (completedWords.has(k)) d.classList.add('done');
+    d.innerHTML = `<span class="clue-num">${cl.num}.</span>${cl.clue}`;
+    d.onclick = () => { direction = 'down'; clickCell(cl.row, cl.col); };
+    dEl.appendChild(d);
+  });
+}
+
+function renderKeyboard() {
+  const kb = document.getElementById('keyboard');
+  kb.innerHTML = '';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(ch => {
+    const k = document.createElement('div');
+    k.className = 'key';
+    k.textContent = ch;
+    if (correctLetters.has(ch))    k.classList.add('correct-key');
+    else if (usedLetters.has(ch))  k.classList.add('used');
+    k.onclick = () => handleLetter(ch);
+    kb.appendChild(k);
+  });
+}
+
+function updateStats() {
+  document.getElementById('scoreEl').textContent = score.toString().padStart(4, '0');
+  document.getElementById('errEl').textContent   = errors.toString().padStart(2, '0');
+  document.getElementById('hintEl').textContent  = hints.toString().padStart(2, '0');
+  renderKeyboard();
+  updateProgress();
+}
+
+function updateProgress() {
+  let total = 0, done = 0;
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const cl = cells[r][c];
+    if (!cl.wall && !cl.isHint) { total++; if (cl.correct || cl.revealed) done++; }
+  }
+  document.getElementById('progEl').textContent = `${done}/${total}`;
+}
+
+function setMsg(txt, type = '') {
+  const el = document.getElementById('msgBar');
+  el.textContent = txt;
+  el.className = 'msg-bar' + (type ? ' ' + type : '');
+}
+
+// ============================================================
+//   INTERACTION
+// ============================================================
+function clickCell(r, c) {
+  const cell = cells[r][c];
+  if (cell.wall || cell.isHint) return;
+  if (selected && selected.r === r && selected.c === c) {
+    direction = direction === 'across' ? 'down' : 'across';
+  }
+  selected = { r, c };
+  highlightWord();
+  showActiveClue(r, c);
+  setMsg('TYPE A LETTER TO FILL');
+}
+
+function showActiveClue(r, c) {
+  document.querySelectorAll('.clue-item').forEach(el => el.classList.remove('active'));
+  const ck = `${r},${c}`;
+  (cellWords[ck] || []).forEach(k => {
+    const el = document.getElementById('ci-' + k);
+    if (el) el.classList.add('active');
+  });
+}
+
+function handleLetter(letter) {
+  if (!selected) { setMsg('SELECT A CELL FIRST', 'err'); return; }
+  const { r, c } = selected;
+  const cell = cells[r][c];
+  if (cell.wall || cell.isHint || cell.correct || cell.revealed) { advance(); return; }
+
+  letter = letter.toUpperCase();
+  const ok = letter === cell.letter;
+  cell.guess = letter;
+  usedLetters.add(letter);
+
+  if (ok) {
+    cell.correct = true;
+    correctLetters.add(letter);
+    score += 10;
+    setMsg('SIGNAL CONFIRMED', 'ok');
+    checkWordDone(r, c);
+    checkWin();
+  } else {
+    errors++;
+    score = Math.max(0, score - 5);
+    setMsg('NOISE DETECTED — WRONG SIGNAL', 'err');
+    const idx = r * COLS + c;
+    const el = document.querySelectorAll('.cell')[idx];
+    if (el) { el.classList.add('wrong'); setTimeout(() => { el.classList.remove('wrong'); renderGrid(); }, 280); }
+  }
+
+  renderGrid();
+  updateStats();
+  if (ok) advance();
+}
+
+function advance() {
+  if (!selected) return;
+  const { r, c } = selected;
+  const ck = `${r},${c}`;
+  const wks = cellWords[ck] || [];
+  const ak = wks.find(k => k.endsWith(direction)) || wks[0];
+  if (!ak || !wordMap[ak]) return;
+  const wcs = wordMap[ak].cells;
+  const idx = wcs.findIndex(cl => cl.r === r && cl.c === c);
+  for (let i = idx + 1; i < wcs.length; i++) {
+    const nc = cells[wcs[i].r][wcs[i].c];
+    if (!nc.correct && !nc.revealed && !nc.isHint) {
+      selected = { r: wcs[i].r, c: wcs[i].c };
+      highlightWord();
+      showActiveClue(wcs[i].r, wcs[i].c);
+      return;
+    }
+  }
+}
+
+function checkWordDone(r, c) {
+  const ck = `${r},${c}`;
+  (cellWords[ck] || []).forEach(k => {
+    if (completedWords.has(k)) return;
+    const w = wordMap[k];
+    if (w.cells.every(({ r: wr, c: wc }) => {
+      const cl = cells[wr][wc];
+      return cl.correct || cl.revealed || cl.isHint;
+    })) {
+      completedWords.add(k);
+      score += 25;
+      setMsg('WORD RETRIEVED  +25', 'ok');
+      const el = document.getElementById('ci-' + k);
+      if (el) el.classList.add('done');
+    }
+  });
+}
+
+function checkWin() {
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const cl = cells[r][c];
+    if (!cl.wall && !cl.isHint && !cl.correct && !cl.revealed) return;
+  }
+  clearInterval(timerInt);
+  const m = Math.floor(timerSec / 60).toString().padStart(2, '0');
+  const s = (timerSec % 60).toString().padStart(2, '0');
+  document.getElementById('winSub').innerHTML =
+    `CONVERGENCE COMPLETE<br>SCORE: ${score.toString().padStart(4,'0')} | TIME: ${m}:${s} | ERRORS: ${errors.toString().padStart(2,'0')}`;
+  document.getElementById('winOverlay').classList.add('show');
+}
+
+function doHint() {
+  if (hints <= 0) { setMsg('NO HINTS REMAINING', 'err'); return; }
+  if (!selected) { setMsg('SELECT A CELL FIRST', 'err'); return; }
+  const { r, c } = selected;
+  const cell = cells[r][c];
+  if (cell.wall || cell.correct || cell.revealed || cell.isHint) { setMsg('CELL ALREADY RESOLVED'); return; }
+  hints--;
+  cell.revealed = true;
+  score = Math.max(0, score - 5);
+  checkWordDone(r, c);
+  renderGrid(); updateStats(); checkWin();
+  setMsg('HINT USED — SIGNAL ASSISTED', 'info');
+  advance();
+}
+
+function doReveal() {
+  if (score < 50) { setMsg('NEED 50 POINTS TO REVEAL WORD', 'err'); return; }
+  if (!selected) { setMsg('SELECT A CELL IN THE WORD FIRST', 'err'); return; }
+  const { r, c } = selected;
+  const ck = `${r},${c}`;
+  const ak = (cellWords[ck] || []).find(k => k.endsWith(direction)) || (cellWords[ck] || [])[0];
+  if (!ak) { setMsg('NO ACTIVE WORD', 'err'); return; }
+  score -= 50;
+  wordMap[ak].cells.forEach(({ r: wr, c: wc }) => {
+    const cl = cells[wr][wc];
+    if (!cl.correct && !cl.isHint) cl.revealed = true;
+  });
+  completedWords.add(ak);
+  const el = document.getElementById('ci-' + ak);
+  if (el) el.classList.add('done');
+  renderGrid(); updateStats(); checkWin();
+  setMsg('WORD PATTERN RETRIEVED  [-50]', 'info');
+}
+
+function newRun() {
+  clearInterval(timerInt);
+  initCells();
+  buildWordMap();
+  selected = null; direction = 'across';
+  errors = 0; hints = 3; score = 0;
+  timerSec = 0; completedWords = new Set();
+  usedLetters = new Set(); correctLetters = new Set();
+  run++;
+  document.getElementById('winOverlay').classList.remove('show');
+  document.getElementById('bottomReadout').textContent =
+    `— 1176 | RUN: ${run.toString().padStart(4,'0')} | VT100   STO:·`;
+  startTimer();
+  renderGrid(); renderClues(); renderKeyboard(); updateStats();
+  setMsg('NEW RUN INITIATED — SELECT A CELL');
+}
+
+function startTimer() {
+  timerInt = setInterval(() => {
+    timerSec++;
+    const m = Math.floor(timerSec / 60).toString().padStart(2, '0');
+    const s = (timerSec % 60).toString().padStart(2, '0');
+    document.getElementById('timeEl').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+// Keyboard input
+document.addEventListener('keydown', e => {
+  if (e.key === 'Backspace') {
+    if (selected) {
+      const { r, c } = selected;
+      const cl = cells[r][c];
+      if (!cl.correct && !cl.revealed && !cl.isHint && cl.guess) {
+        cl.guess = ''; renderGrid();
+      }
+    }
+    return;
+  }
+  if (e.key === 'Tab') { e.preventDefault(); advance(); return; }
+  if (e.key === 'ArrowRight') { direction = 'across'; if(selected) highlightWord(); return; }
+  if (e.key === 'ArrowDown')  { direction = 'down';   if(selected) highlightWord(); return; }
+  const l = e.key.toUpperCase();
+  if (/^[A-Z]$/.test(l)) handleLetter(l);
+});
+
+// ============================================================
+//   BOOT
+// ============================================================
+initCells();
+buildWordMap();
+startTimer();
+renderGrid();
+renderClues();
+renderKeyboard();
+updateStats();
+</script>
+</body>
+</html>
