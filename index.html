@@ -13,7 +13,7 @@ body{min-height:100vh;background:#ccc9b8;display:flex;justify-content:center;ali
 .panel-col{flex:1;min-width:320px;display:flex;flex-direction:column;}
 
 /* BEZEL */
-.bezel{width:464px;background:#f0ece0;border-radius:36px 36px 30px 30px;border:3px solid #aaa890;box-shadow:0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);overflow:hidden;}
+.bezel{width:464px;background:#181c14;border-radius:36px 36px 30px 30px;border:3px solid #aaa890;box-shadow:0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);overflow:hidden;}
 .top-banner{background:#181c12;border-radius:33px 33px 0 0;border:2.5px solid #c8c490;border-bottom:none;padding:14px 20px 16px;}
 .top-banner-inner{border:1.5px solid #c8c490;border-radius:22px 22px 0 0;padding:10px 14px 12px;}
 .banner-title-row{display:flex;align-items:center;justify-content:center;gap:10px;}
@@ -21,45 +21,45 @@ body{min-height:100vh;background:#ccc9b8;display:flex;justify-content:center;ali
 .banner-title{font-family:'Caveat',cursive;font-size:31px;font-weight:700;color:#d8dba8;letter-spacing:5px;line-height:1;}
 .banner-sub{font-family:'Caveat',cursive;font-size:15px;font-weight:600;color:#d8dba8;text-align:center;letter-spacing:2px;margin-top:6px;}
 .banner-pipe{color:#c8c490;margin:0 8px;}
-.instrument{background:#f5f1e4;padding:18px 16px 16px;border-left:2.5px solid #c8c490;border-right:2.5px solid #c8c490;}
+.instrument{background:#181c14;padding:18px 16px 16px;border-left:2.5px solid #c8c490;border-right:2.5px solid #c8c490;}
 .gauge-section{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;}
-.gauge-nums{display:flex;align-items:flex-end;font-family:'Caveat',cursive;font-size:12px;color:#2a2c22;margin-bottom:2px;}
+.gauge-nums{display:flex;align-items:flex-end;font-family:'Caveat',cursive;font-size:12px;color:#6a7a50;margin-bottom:2px;}
 .gauge-nums span{text-align:center;}
-.gauge-ruler{display:flex;align-items:flex-end;height:22px;border-bottom:2.5px solid #2a2c22;padding:0 2px;}
-.tk{background:#2a2c22;display:inline-block;width:2px;margin:0 1.7px;align-self:flex-end;}
+.gauge-ruler{display:flex;align-items:flex-end;height:22px;border-bottom:2.5px solid #4a5a38;padding:0 2px;}
+.tk{background:#4a5a38;display:inline-block;width:2px;margin:0 1.7px;align-self:flex-end;}
 .tk.a{height:16px;}.tk.b{height:10px;}.tk.c{height:13px;}
-.tl-row{display:flex;align-items:center;gap:6px;margin-top:4px;font-family:'Caveat',cursive;font-size:13px;color:#2a2c22;letter-spacing:3px;}
-.tl-dot{width:6px;height:6px;border-radius:50%;background:#2a2c22;flex-shrink:0;}
+.tl-row{display:flex;align-items:center;gap:6px;margin-top:4px;font-family:'Caveat',cursive;font-size:13px;color:#6a7a50;letter-spacing:3px;}
+.tl-dot{width:6px;height:6px;border-radius:50%;background:#6a7a50;flex-shrink:0;}
 .grid-section{display:flex;align-items:flex-start;margin-top:4px;}
 .left-ruler{display:flex;flex-direction:column;align-items:flex-end;margin-right:6px;flex-shrink:0;width:46px;}
-.arm-label{font-family:'Caveat',cursive;font-size:12px;color:#2a2c22;letter-spacing:1px;margin-bottom:3px;align-self:flex-start;margin-left:2px;}
+.arm-label{font-family:'Caveat',cursive;font-size:12px;color:#6a7a50;letter-spacing:1px;margin-bottom:3px;align-self:flex-start;margin-left:2px;}
 .ruler-body{display:flex;align-items:flex-start;gap:3px;justify-content:flex-end;}
 .ruler-nums{display:flex;flex-direction:column;align-items:flex-end;position:relative;}
-.rnum{font-family:'Caveat',cursive;font-size:13px;color:#2a2c22;text-align:right;padding-right:2px;line-height:1;position:absolute;}
-.ruler-bracket{width:13px;border-top:2.5px solid #2a2c22;border-right:2.5px solid #2a2c22;border-bottom:2.5px solid #2a2c22;border-radius:0 4px 4px 0;}
+.rnum{font-family:'Caveat',cursive;font-size:13px;color:#6a7a50;text-align:right;padding-right:2px;line-height:1;position:absolute;}
+.ruler-bracket{width:13px;border-top:2.5px solid #4a5a38;border-right:2.5px solid #4a5a38;border-bottom:2.5px solid #4a5a38;border-radius:0 4px 4px 0;}
 
 /* GRID */
-.cw-grid{display:grid;grid-template-columns:repeat(8,42px);grid-template-rows:repeat(8,42px);gap:0;border:2px solid #333;}
-.cell{width:42px;height:42px;border:1px solid #999;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;overflow:hidden;}
+.cw-grid{display:grid;grid-template-columns:repeat(8,42px);grid-template-rows:repeat(8,42px);gap:0;border:2px solid #1a2010;background:#0a0c08;}
+.cell{width:42px;height:42px;border:1px solid #1a2010;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;overflow:hidden;background:#0a0c08;}
 
 /* cell types */
-.cell.wall   {background:#f5f1e4;border-color:#ccc;cursor:default;}
-.cell.white  {background:#faf7ed;border-color:#aaa;}           /* normal playable */
-.cell.yellow{background:#f5f1e4;border-color:#ccc;}        /* gold column — empty, just yellow bg */
+.cell.wall   {background:#060808;border-color:#0f1410;cursor:default;}
+.cell.white  {background:#0a0c08;border-color:#1a2010;}        /* dark CRT playable */
+.cell.yellow{background:#0a0c08;border-color:#1a2010;}        /* gold column — empty, just yellow bg */
 
 /* interaction states on white cells */
 .cell.white.selected  {outline:3px solid #22aaff;outline-offset:-3px;z-index:5;}
 
-.cell.white.word-hl   {background:#c8ddf0;}
-.cell.yellow.word-hl  {background:#c8ddf0;}
-.cell.white.correct   {background:#c8eaaa!important;}
+.cell.white.word-hl   {background:#0a1a14;border-color:#1a3a28;}
+.cell.yellow.word-hl  {background:#0a1a14;border-color:#1a3a28;}
+.cell.white.correct   {background:#081a08!important;border-color:#1a4010!important;}
 
-.cell.white.revealed  {background:#fff0b0!important;}
+.cell.white.revealed  {background:#181000!important;border-color:#3a2800!important;}
 .cell.wrong           {animation:shake .25s ease;}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
-.cell-num{position:absolute;top:2px;left:3px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#888;line-height:1;z-index:3;}
-.cell-pixel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;}
+.cell-num{position:absolute;top:2px;left:3px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#3a5030;line-height:1;z-index:3;}
+.cell-pixel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;background:#0a0c08;}
 
 /* BOTTOM BANNER */
 .bottom-banner{background:#181c12;border-radius:0 0 27px 27px;border:2.5px solid #c8c490;border-top:none;padding:12px 20px 14px;}
@@ -171,6 +171,7 @@ body{min-height:100vh;background:#ccc9b8;display:flex;justify-content:center;ali
       <button class="btn primary" onclick="doHint()">&#9655; HINT [-1]</button>
       <button class="btn warn" onclick="doReveal()">REVEAL WORD [-50]</button>
       <button class="btn danger" onclick="newRun()">NEW RUN</button>
+      <button class="btn" id="musicBtn" onclick="toggleMusic()" style="border-color:#3a5a4a;color:#4a8a6a;">&#9834; SOUND ON</button>
     </div>
     <div class="clues-section">
       <div class="clue-col"><div class="clue-head">&#8212; ACROSS</div><div id="cluesA"></div></div>
@@ -231,8 +232,103 @@ function makeSVG(grid, litCol, darkCol, W, H){
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">${rects}${sl}</svg>`;
 }
 
-/* Keyboard key SVG — amber on dark */
-function keySVG(ch, litCol){ return PX[ch]?makeSVG(PX[ch],litCol,'#080a06',28,28):''; }
+/* ── PHOSPHOR COLORS — exact per-letter from patternretrieval.app specimen grid ──
+   Reading the grid carefully:
+   Row 2 uppercase (A-Z visible): 
+   A=orange, K=orange, M=yellow, N=yellow, V=yellow, W=yellow, X=orange, Y=orange, Z=orange
+   E=yellow, F=yellow, H=yellow, I=yellow, L=yellow, T=yellow
+   B=grey, C=grey, D=grey, G=grey, J=grey, O=grey, P=grey, Q=grey, R=grey, S=grey, U=grey
+*/
+const PHOSPHOR = {
+  A:'#e87800', // orange
+  B:'#b8c0b8', // grey-white
+  C:'#b8c0b8',
+  D:'#b8c0b8',
+  E:'#e8d000', // yellow
+  F:'#e8d000',
+  G:'#b8c0b8',
+  H:'#e8d000',
+  I:'#e8d000',
+  J:'#b8c0b8',
+  K:'#e87800', // orange
+  L:'#e8d000',
+  M:'#e8d000',
+  N:'#e8d000',
+  O:'#b8c0b8',
+  P:'#b8c0b8',
+  Q:'#b8c0b8',
+  R:'#b8c0b8',
+  S:'#b8c0b8',
+  T:'#e8d000',
+  U:'#b8c0b8',
+  V:'#e8d000',
+  W:'#e8d000',
+  X:'#e87800', // orange
+  Y:'#e87800',
+  Z:'#e87800',
+};
+
+/* ── ANIMATED KEYBOARD ── canvas-based Hopfield corruption loop */
+// Store active animation handles keyed by letter
+const keyAnims = {};
+const cellAnims = {}; // tracks canvas animations on board cells
+
+function stopAllCellAnims(){
+  Object.values(cellAnims).forEach(id=>cancelAnimationFrame(id));
+  Object.keys(cellAnims).forEach(k=>delete cellAnims[k]);
+}
+
+/* Animate a canvas with a given letter and color — same Hopfield loop */
+function animateCanvas(canvas, ch, litCol, animStore, storeKey, speed){
+  const ctx=canvas.getContext('2d');
+  const grid=PX[ch];if(!grid)return;
+  const ROWS=5,COLS=5,W=canvas.width,H=canvas.height;
+  const pad=2,gap=1;
+  const pw=Math.floor((W-pad*2)/COLS),ph=Math.floor((H-pad*2)/ROWS);
+  const darkCol='#0a0c08';
+  function hexToRgb(h){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return[r,g,b];}
+  const[lr,lg,lb]=hexToRgb(litCol);
+  const[dr,dg,db]=hexToRgb(darkCol);
+  function lerp(a,b,t){return a+(b-a)*t;}
+  let state=grid.map(row=>[...row]);
+  const target=grid.map(row=>[...row]);
+  let phase='clean',phaseTimer=0;
+  const spd=speed||1;
+  const CLEAN_HOLD=(60+Math.random()*60)/spd;
+  const CORRUPT_DUR=(20+Math.random()*15)/spd;
+  const CONVERGE_DUR=(25+Math.random()*15)/spd;
+  let corruptState=null;
+  function corrupt(){return state.map((row,r)=>row.map((v,c)=>Math.random()<0.45?1-target[r][c]:target[r][c]));}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+      const v=state[r][c];
+      ctx.fillStyle=`rgb(${Math.round(lerp(dr,lr,v))},${Math.round(lerp(dg,lg,v))},${Math.round(lerp(db,lb,v))})`;
+      const x=pad+c*(pw+gap),y=pad+r*(ph+gap);
+      ctx.fillRect(x,y,pw,ph);
+      ctx.fillStyle='rgba(0,0,0,0.22)';
+      for(let sy=y+1;sy<y+ph;sy+=2)ctx.fillRect(x,sy,pw,1);
+    }
+  }
+  function step(){
+    phaseTimer++;
+    if(phase==='clean'){state=target.map(row=>[...row]);if(phaseTimer>CLEAN_HOLD){phase='corrupt';phaseTimer=0;corruptState=corrupt();}}
+    else if(phase==='corrupt'){const t=Math.min(phaseTimer/CORRUPT_DUR,1);state=target.map((row,r)=>row.map((v,c)=>lerp(v,corruptState[r][c],t)));if(phaseTimer>=CORRUPT_DUR){phase='converge';phaseTimer=0;}}
+    else if(phase==='converge'){const t=Math.min(phaseTimer/CONVERGE_DUR,1);state=corruptState.map((row,r)=>row.map((v,c)=>lerp(v,target[r][c],t)));if(phaseTimer>=CONVERGE_DUR){phase='clean';phaseTimer=-Math.round(Math.random()*30);}}
+    draw();
+    animStore[storeKey]=requestAnimationFrame(step);
+  }
+  step();
+}
+
+function stopAllKeyAnims(){
+  Object.values(keyAnims).forEach(id=>cancelAnimationFrame(id));
+  Object.keys(keyAnims).forEach(k=>delete keyAnims[k]);
+}
+
+function animateKey(canvas, ch, litCol){
+  setTimeout(()=>{ animateCanvas(canvas, ch, litCol, keyAnims, ch, 1); }, Math.random()*2000);
+}
 
 /* Cell letter SVG — typed by player */
 function cellSVG(ch, litCol, darkCol){ return PX[ch]?makeSVG(PX[ch],litCol,darkCol,34,34):''; }
@@ -276,22 +372,22 @@ const ANSWERS=[
 
 const CLUE_DATA={
   across:[
-    {num:1, clue:"Transmit — send it out",      row:0,col:1,len:6},
-    {num:3, clue:"Receive decode node",          row:1,col:2,len:4},
-    {num:5, clue:"Encode and deliver",           row:2,col:1,len:3},
-    {num:7, clue:"Route relay scan",             row:3,col:2,len:6},
-    {num:9, clue:"Initiate transmission",        row:4,col:1,len:2},
-    {num:11,clue:"Signal origin log burst",      row:5,col:1,len:7},
-    {num:13,clue:"Header tap address",           row:6,col:2,len:3},
-    {num:15,clue:"Buffer overflow routine",      row:7,col:2,len:3},
+    {num:1,  clue:"Transmit the recovered pattern — release signal once convergence is confirmed",  row:0,col:1,len:6},
+    {num:3,  clue:"The process of extracting signal from corrupted memory",                row:1,col:2,len:4},
+    {num:5,  clue:"To lock a memory pattern into the weight matrix",                      row:2,col:1,len:3},
+    {num:7,  clue:"The convergence path: noise collapses toward stored attractor",        row:3,col:2,len:6},
+    {num:9,  clue:"Begin recall — trigger state update from partial input",               row:4,col:1,len:2},
+    {num:11, clue:"What each neuron broadcasts during synchronous update",                row:5,col:1,len:7},
+    {num:13, clue:"Signal ceiling — maximum activation before saturation",               row:6,col:2,len:3},
+    {num:15, clue:"Stack state after full convergence — pattern locked",                 row:7,col:2,len:3},
   ],
   down:[
-    {num:2, clue:"The gold spine column",        row:0,col:2,len:6},
-    {num:4, clue:"Origin data stream",           row:0,col:3,len:8},
-    {num:6, clue:"Bit pattern — first signal",   row:0,col:4,len:6},
-    {num:8, clue:"Transmission layer node",      row:1,col:6,len:6},
-    {num:10,clue:"Adjacent relay output",        row:1,col:7,len:6},
-    {num:12,clue:"Routing entry (abbr)",         row:3,col:5,len:3},
+    {num:2,  clue:"The gold spine — axis of convergence through which all signals pass", row:0,col:2,len:6},
+    {num:4,  clue:"Raw corrupted input fed into the network at recall time",             row:0,col:3,len:8},
+    {num:6,  clue:"Partial cue — the fragment the network uses to reconstruct the whole",row:0,col:4,len:6},
+    {num:8,  clue:"The attractor basin — stable state the network settles into",         row:1,col:6,len:6},
+    {num:10, clue:"Adjacent neuron — fires or stays silent based on weighted sum",       row:1,col:7,len:6},
+    {num:12, clue:"Hebbian rule — neurons that fire together wire together (abbr)",      row:3,col:5,len:3},
   ]
 };
 
@@ -344,45 +440,71 @@ function clueStartMap(){
 
 /* ── Render grid ── */
 function renderGrid(){
+  stopAllCellAnims();
   const g=document.getElementById('cwGrid');g.innerHTML='';
   const cs=clueStartMap();
+
+  // Figure out which cells are in the selected word
+  let wordCells=new Set(), selKey=null;
+  if(selected){
+    const{r,c}=selected;
+    const wks=cellWords[`${r},${c}`]||[];
+    selKey=wks.find(k=>k.endsWith(direction))||wks[0];
+    if(selKey&&wordMap[selKey]) wordMap[selKey].cells.forEach(({r:wr,c:wc})=>wordCells.add(`${wr},${wc}`));
+  }
 
   for(let r=0;r<ROWS;r++){for(let c=0;c<COLS;c++){
     const cell=cells[r][c],div=document.createElement('div');
     div.className='cell';div.dataset.r=r;div.dataset.c=c;
+    const ck=`${r},${c}`;
+    const isSelected = selected && selected.r===r && selected.c===c;
+    const isWordHl   = wordCells.has(ck) && !isSelected;
 
     if(cell.wall){
       div.classList.add('wall');
     } else {
-      /* base background */
       div.classList.add(cell.yellow?'yellow':'white');
-
-      /* state classes */
-      if(cell.correct)  div.classList.add('correct');
-      if(cell.revealed) div.classList.add('revealed');
+      if(cell.correct)   div.classList.add('correct');
+      if(cell.revealed)  div.classList.add('revealed');
+      if(isSelected)     {div.classList.add('selected');div.style.outline='3px solid #22aaff';div.style.outlineOffset='-3px';div.style.zIndex='5';}
+      else if(isWordHl)  div.classList.add('word-hl');
 
       /* clue number */
-      const ck=`${r},${c}`;
       if(cs[ck]){const ni=document.createElement('span');ni.className='cell-num';ni.textContent=cs[ck];div.appendChild(ni);}
 
-      /* pixel-art letter — only if something to show */
-      const showLetter = cell.correct ? cell.letter
+      /* What letter drives this cell's visual */
+      const showLetter = cell.correct  ? cell.letter
                        : cell.revealed ? cell.letter
-                       : cell.guess   ? cell.guess
+                       : cell.guess    ? cell.guess
+                       : (isSelected||isWordHl) ? cell.letter  // preview answer letter animated
                        : null;
 
       if(showLetter && PX[showLetter]){
         const pw=document.createElement('div');pw.className='cell-pixel';
-        let litCol,darkCol;
+
         if(cell.correct){
-          litCol='#44cc00'; darkCol='#0a1a08';
+          // Confirmed — static green pixel art
+          pw.innerHTML=cellSVG(showLetter,'#44cc00','#0a1a08');
         } else if(cell.revealed){
-          litCol='#e8c800'; darkCol='#181400';
+          // Revealed — static gold
+          pw.innerHTML=cellSVG(showLetter,'#e8c800','#181400');
+        } else if(cell.guess && !isSelected && !isWordHl){
+          // Typed unconfirmed — static amber
+          pw.innerHTML=cellSVG(showLetter,'#e8a000','#100e00');
+        } else if(isSelected || isWordHl){
+          // ANIMATED — use letter's PHOSPHOR color
+          const litCol = PHOSPHOR[showLetter] || '#e8a000';
+          const canvas=document.createElement('canvas');
+          canvas.width=34;canvas.height=34;
+          canvas.style.display='block';canvas.style.pointerEvents='none';
+          pw.appendChild(canvas);
+          const animKey=`cell_${r}_${c}`;
+          // Selected cell animates faster, word highlight slower
+          const speed = isSelected ? 1.5 : 0.8;
+          animateCanvas(canvas, showLetter, litCol, cellAnims, animKey, speed);
         } else {
-          /* typed but unconfirmed */
-          litCol='#e8a000'; darkCol='#100e00';
+          pw.innerHTML=cellSVG(showLetter,'#e8a000','#100e00');
         }
-        pw.innerHTML=cellSVG(showLetter,litCol,darkCol);
         div.appendChild(pw);
       }
 
@@ -393,7 +515,7 @@ function renderGrid(){
 
   const gridH=ROWS*42;
   const rb=document.getElementById('rulerBracket');if(rb)rb.style.height=gridH+'px';
-  setRulerNums(gridH);highlightWord();updateProgress();
+  setRulerNums(gridH);updateProgress();
 }
 
 function setRulerNums(h){
@@ -405,31 +527,49 @@ function setRulerNums(h){
   });
 }
 
-function highlightWord(){
-  document.querySelectorAll('.cell').forEach(el=>{
-    el.classList.remove('word-hl','selected');el.style.outline='';
-  });
-  if(!selected)return;
-  const{r,c}=selected;
-  const wks=cellWords[`${r},${c}`]||[],ak=wks.find(k=>k.endsWith(direction))||wks[0];
-  if(ak&&wordMap[ak])wordMap[ak].cells.forEach(({r:wr,c:wc})=>{
-    const el=document.querySelectorAll('.cell')[wr*COLS+wc];
-    if(el&&!el.classList.contains('wall'))el.classList.add('word-hl');
-  });
-  const se=document.querySelectorAll('.cell')[r*COLS+c];
-  if(se){se.classList.add('selected');se.style.outline='3px solid #22aaff';se.style.outlineOffset='-3px';}
-}
+function highlightWord(){ renderGrid(); }
 
 function renderKeyboard(){
+  stopAllKeyAnims();
   const kb=document.getElementById('keyboard');kb.innerHTML='';
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(ch=>{
     const k=document.createElement('div');k.className='key';
-    let litCol='#e8a000';
+    let litCol = PHOSPHOR[ch] || '#e8a000';
     if(correctLetters.has(ch)){k.classList.add('correct-key');litCol='#44cc00';}
-    else if(usedLetters.has(ch)){k.classList.add('used');litCol='#2a1400';}
-    k.innerHTML=keySVG(ch,litCol);
+    else if(usedLetters.has(ch)){k.classList.add('used');litCol='#1a1a0a';}
+    // Canvas instead of SVG for animation
+    const canvas=document.createElement('canvas');
+    canvas.width=28;canvas.height=28;
+    canvas.style.display='block';
+    canvas.style.pointerEvents='none';
+    k.appendChild(canvas);
     k.onclick=()=>handleLetter(ch);
     kb.appendChild(k);
+    // Start animation (dimmed/frozen for used/correct)
+    if(correctLetters.has(ch)){
+      // draw static green — no animation
+      const ctx=canvas.getContext('2d');
+      const g=PX[ch];if(!g)return;
+      const pad=2,gap=1,COLS=5,ROWS=5,W=28,H=28;
+      const pw=Math.floor((W-pad*2)/COLS),ph=Math.floor((H-pad*2)/ROWS);
+      for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+        ctx.fillStyle=g[r][c]?'#44cc00':'#080a06';
+        ctx.fillRect(pad+c*(pw+gap),pad+r*(ph+gap),pw,ph);
+      }
+    } else if(usedLetters.has(ch)){
+      // draw static very dim — no animation
+      const ctx=canvas.getContext('2d');
+      const g=PX[ch];if(!g)return;
+      const pad=2,gap=1,COLS=5,ROWS=5,W=28,H=28;
+      const pw=Math.floor((W-pad*2)/COLS),ph=Math.floor((H-pad*2)/ROWS);
+      for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+        ctx.fillStyle=g[r][c]?'#2a1800':'#080a06';
+        ctx.fillRect(pad+c*(pw+gap),pad+r*(ph+gap),pw,ph);
+      }
+    } else {
+      // LIVE ANIMATED
+      animateKey(canvas, ch, litCol);
+    }
   });
 }
 
@@ -561,6 +701,7 @@ function doReveal(){
 }
 function newRun(){
   clearInterval(timerInt);
+  stopAllCellAnims();
   initCells();buildWordMap();
   selected=null;direction='across';
   errors=0;hints=3;score=0;timerSec=0;
@@ -581,6 +722,180 @@ function tick(){
 initCells();buildWordMap();
 timerInt=setInterval(tick,1000);
 renderGrid();renderClues();renderKeyboard();updateStats();
+
+/* ══════════════════════════════════════════════════════════════
+   GENERATIVE BACKGROUND MUSIC — Web Audio API
+   Dark ambient CRT/Hopfield theme:
+   - Slow drone bass with slight frequency drift
+   - Arpeggiated high synth notes (pattern retrieval motif)
+   - Subtle noise bursts (signal static)
+   - Soft low-pass filter sweep
+   ══════════════════════════════════════════════════════════════ */
+
+let audioCtx = null;
+let musicPlaying = false;
+let musicNodes = [];  // all running nodes to stop them
+
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function toggleMusic(){
+  if(!musicPlaying){ startMusic(); }
+  else { stopMusic(); }
+}
+
+function stopMusic(){
+  musicNodes.forEach(n=>{ try{ n.stop(); }catch(e){} try{ n.disconnect(); }catch(e){} });
+  musicNodes=[];
+  musicPlaying=false;
+  document.getElementById('musicBtn').textContent='♩ SOUND OFF';
+  document.getElementById('musicBtn').style.color='#4a6040';
+}
+
+function startMusic(){
+  initAudio();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  musicPlaying=true;
+  document.getElementById('musicBtn').textContent='♬ SOUND ON';
+  document.getElementById('musicBtn').style.color='#88cc88';
+
+  const ctx=audioCtx;
+  const master=ctx.createGain();
+  master.gain.setValueAtTime(0.72, ctx.currentTime);
+  master.connect(ctx.destination);
+
+  /* ── 1. DRONE BASS ── two detuned oscillators for thickness */
+  function makeDrone(freq, detune, vol){
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    const filter=ctx.createBiquadFilter();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.detune.setValueAtTime(detune, ctx.currentTime);
+    // Slow freq drift — breathing effect
+    osc.frequency.linearRampToValueAtTime(freq*1.004, ctx.currentTime+8);
+    osc.frequency.linearRampToValueAtTime(freq*0.997, ctx.currentTime+16);
+    osc.frequency.linearRampToValueAtTime(freq, ctx.currentTime+24);
+    filter.type='lowpass';
+    filter.frequency.setValueAtTime(300, ctx.currentTime);
+    filter.Q.setValueAtTime(1.5, ctx.currentTime);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    osc.connect(filter);filter.connect(gain);gain.connect(master);
+    osc.start();
+    musicNodes.push(osc,gain,filter);
+  }
+  makeDrone(36.7, 0, 0.55);    // low D — root drone
+  makeDrone(36.7, -8, 0.3);    // slightly detuned for warmth
+  makeDrone(55.0, 5, 0.2);     // octave up A — adds depth
+  makeDrone(73.4, 3, 0.1);     // D two octaves — subtle
+
+  /* ── 2. SLOW FILTER SWEEP on a mid-freq pad ── */
+  const padOsc=ctx.createOscillator();
+  const padFilter=ctx.createBiquadFilter();
+  const padGain=ctx.createGain();
+  padOsc.type='sawtooth';
+  padOsc.frequency.setValueAtTime(110, ctx.currentTime);
+  padFilter.type='lowpass';
+  padFilter.frequency.setValueAtTime(200, ctx.currentTime);
+  padFilter.Q.setValueAtTime(4, ctx.currentTime);
+  // Sweep filter up and down slowly
+  (function sweep(){
+    if(!musicPlaying) return;
+    const now=ctx.currentTime;
+    padFilter.frequency.cancelScheduledValues(now);
+    padFilter.frequency.setValueAtTime(padFilter.frequency.value, now);
+    padFilter.frequency.linearRampToValueAtTime(800, now+6);
+    padFilter.frequency.linearRampToValueAtTime(150, now+12);
+    setTimeout(sweep, 12000);
+  })();
+  padGain.gain.setValueAtTime(0.28, ctx.currentTime);
+  padOsc.connect(padFilter);padFilter.connect(padGain);padGain.connect(master);
+  padOsc.start();
+  musicNodes.push(padOsc,padFilter,padGain);
+
+  /* ── 3. ARPEGGIATED HIGH NOTES — the pattern retrieval motif ── */
+  // Notes: D pentatonic minor — D E F A C (eerie, digital feel)
+  const noteFreqs=[293.66, 329.63, 349.23, 440.00, 523.25, 587.33, 659.25, 698.46];
+  // Sequence pattern — not random, has a repeating motif feel
+  const sequence=[0,2,4,1,5,3,6,2,4,0,5,1,3,6,2,4];
+  let seqIdx=0;
+
+  function playArpNote(){
+    if(!musicPlaying) return;
+    const now=ctx.currentTime;
+    const freq=noteFreqs[sequence[seqIdx % sequence.length]];
+    seqIdx++;
+
+    const osc=ctx.createOscillator();
+    const env=ctx.createGain();
+    const filt=ctx.createBiquadFilter();
+    osc.type='square';
+    osc.frequency.setValueAtTime(freq, now);
+    filt.type='bandpass';
+    filt.frequency.setValueAtTime(freq*2, now);
+    filt.Q.setValueAtTime(3, now);
+    env.gain.setValueAtTime(0, now);
+    env.gain.linearRampToValueAtTime(0.18, now+0.02);
+    env.gain.exponentialRampToValueAtTime(0.001, now+0.4);
+    osc.connect(filt);filt.connect(env);env.connect(master);
+    osc.start(now);osc.stop(now+0.5);
+    musicNodes.push(osc,env,filt);
+
+    // Variable timing — sometimes faster, sometimes slower (feels alive)
+    const interval=400+Math.random()*600;
+    setTimeout(playArpNote, interval);
+  }
+  setTimeout(playArpNote, 800);
+
+  /* ── 4. NOISE BURSTS — static / signal interference ── */
+  function makeNoiseBurst(){
+    if(!musicPlaying) return;
+    const bufSize=ctx.sampleRate*0.05;
+    const buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+    const data=buf.getChannelData(0);
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.3;
+    const src=ctx.createBufferSource();
+    const nFilt=ctx.createBiquadFilter();
+    const nGain=ctx.createGain();
+    src.buffer=buf;
+    nFilt.type='bandpass';
+    nFilt.frequency.setValueAtTime(1200+Math.random()*2000, ctx.currentTime);
+    nFilt.Q.setValueAtTime(8, ctx.currentTime);
+    nGain.gain.setValueAtTime(0.12+Math.random()*0.10, ctx.currentTime);
+    src.connect(nFilt);nFilt.connect(nGain);nGain.connect(master);
+    src.start();
+    musicNodes.push(src,nFilt,nGain);
+    // Random interval between noise bursts — 2 to 8 seconds
+    setTimeout(makeNoiseBurst, 2000+Math.random()*6000);
+  }
+  setTimeout(makeNoiseBurst, 1500);
+
+  /* ── 5. SUB PULSE — very low heartbeat ── */
+  function subPulse(){
+    if(!musicPlaying) return;
+    const now=ctx.currentTime;
+    const osc=ctx.createOscillator();
+    const env=ctx.createGain();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(29.14, now); // low Bb
+    env.gain.setValueAtTime(0, now);
+    env.gain.linearRampToValueAtTime(0.65, now+0.05);
+    env.gain.exponentialRampToValueAtTime(0.001, now+1.2);
+    osc.connect(env);env.connect(master);
+    osc.start(now);osc.stop(now+1.5);
+    musicNodes.push(osc,env);
+    setTimeout(subPulse, 3000+Math.random()*2000);
+  }
+  setTimeout(subPulse, 2000);
+}
+
+/* Auto-start music on first user interaction */
+document.addEventListener('click', function startOnce(){
+  if(!musicPlaying) startMusic();
+  document.removeEventListener('click', startOnce);
+}, {once:true});
 
 document.addEventListener('keydown',e=>{
   if(e.key==='Backspace'){
