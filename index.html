@@ -8,12 +8,12 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{min-height:100vh;background:#ccc9b8;font-family:'Share Tech Mono',monospace;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;}
-.page-wrap{display:flex;gap:20px;align-items:stretch;width:100%;max-width:1060px;padding:24px 20px 0;}
-.device-col{flex-shrink:0;}
-.panel-col{flex:1;min-width:420px;display:flex;flex-direction:column;height:100%;}
+.page-wrap{display:flex;gap:20px;align-items:stretch;width:100%;max-width:1060px;padding:24px 20px 0;box-sizing:border-box;}
+.device-col{flex-shrink:0;display:flex;}
+.panel-col{flex:1;min-width:420px;display:flex;flex-direction:column;overflow:hidden;}
 
 /* BEZEL */
-.bezel{width:464px;background:#181c14;border-radius:36px 36px 30px 30px;border:3px solid #aaa890;box-shadow:0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);overflow:hidden;display:flex;flex-direction:column;}
+.bezel{width:464px;background:#181c14;border-radius:36px 36px 30px 30px;border:3px solid #aaa890;box-shadow:0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);overflow:hidden;}
 .top-banner{background:#181c12;border-radius:33px 33px 0 0;border:2.5px solid #c8c490;border-bottom:none;padding:14px 20px 16px;}
 .top-banner-inner{border:1.5px solid #c8c490;border-radius:22px 22px 0 0;padding:10px 14px 12px;}
 .banner-title-row{display:flex;align-items:center;justify-content:center;gap:10px;}
@@ -67,7 +67,7 @@ body{min-height:100vh;background:#ccc9b8;font-family:'Share Tech Mono',monospace
 .bottom-readout{font-family:'Caveat',cursive;font-size:21px;font-weight:700;color:#d8dba8;text-align:center;letter-spacing:4px;}
 
 /* RIGHT PANEL */
-.stats-bar{background:#111408;border:1px solid #2a3010;border-radius:6px 6px 0 0;display:flex;justify-content:space-around;padding:10px 6px;flex-shrink:0;}
+.stats-bar{background:#111408;border:1px solid #2a3010;border-radius:6px 6px 0 0;display:flex;justify-content:space-around;padding:10px 6px;flex-shrink:0;margin-top:0;}
 .stat-item{font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a6020;letter-spacing:1px;text-align:center;}
 .stat-val{display:block;font-size:15px;font-weight:bold;margin-top:2px;}
 .stat-val.red{color:#cc3333;}.stat-val.gv{color:#c8a000;}.stat-val.grn{color:#88cc00;}
@@ -87,8 +87,8 @@ body{min-height:100vh;background:#ccc9b8;font-family:'Share Tech Mono',monospace
 .btn.warn{border-color:#5a4a00;color:#c8a000;}
 .btn.danger{border-color:#5a2000;color:#cc4422;}
 
-.clues-section{display:flex;background:#0d1008;border:1px solid #2a3010;border-top:none;border-radius:0 0 6px 6px;flex:1;min-height:0;}
-.clue-col{flex:1;padding:10px 12px;overflow-y:auto;}
+.clues-section{display:flex;background:#0d1008;border:1px solid #2a3010;border-top:none;border-radius:0 0 6px 6px;flex:1;min-height:0;overflow:hidden;}
+.clue-col{flex:1;padding:10px 12px;overflow-y:auto;min-height:0;}
 .clue-col:first-child{border-right:1px solid #2a3010;}
 .clue-head{font-family:'Share Tech Mono',monospace;font-size:9px;color:#4a6020;letter-spacing:3px;border-bottom:1px solid #2a3010;padding-bottom:4px;margin-bottom:6px;}
 .clue-item{font-family:'Share Tech Mono',monospace;font-size:9.5px;color:#3a5018;padding:3px 4px;margin:2px 0;cursor:pointer;border-left:2px solid transparent;line-height:1.5;transition:all .1s;}
@@ -695,6 +695,22 @@ function newRun(){
   document.getElementById('bottomReadout').textContent=`\u2014 1176 | RUN: ${run.toString().padStart(4,'0')} | VT100\u00a0\u00a0 STO:\u00b7`;
   timerInt=setInterval(tick,1000);
   renderGrid();renderClues();renderKeyboard();updateStats();
+
+/* ── Sync panel heights precisely ── */
+function syncPanelHeights(){
+  const deviceCol = document.querySelector('.device-col');
+  const panelCol  = document.querySelector('.panel-col');
+  if(!deviceCol || !panelCol) return;
+  // Reset first so measurement is clean
+  panelCol.style.height = '';
+  panelCol.style.maxHeight = '';
+  const h = deviceCol.getBoundingClientRect().height;
+  panelCol.style.height    = h + 'px';
+  panelCol.style.maxHeight = h + 'px';
+}
+setTimeout(syncPanelHeights, 100);
+setTimeout(syncPanelHeights, 400); // second pass after canvas renders
+window.addEventListener('resize', ()=>{ setTimeout(syncPanelHeights,50); });
   setMsg('NEW RUN \u2014 SELECT A CELL');
 }
 function tick(){
@@ -900,6 +916,22 @@ function tick(){
 initCells();buildWordMap();
 timerInt=setInterval(tick,1000);
 renderGrid();renderClues();renderKeyboard();updateStats();
+
+/* ── Sync panel heights precisely ── */
+function syncPanelHeights(){
+  const deviceCol = document.querySelector('.device-col');
+  const panelCol  = document.querySelector('.panel-col');
+  if(!deviceCol || !panelCol) return;
+  // Reset first so measurement is clean
+  panelCol.style.height = '';
+  panelCol.style.maxHeight = '';
+  const h = deviceCol.getBoundingClientRect().height;
+  panelCol.style.height    = h + 'px';
+  panelCol.style.maxHeight = h + 'px';
+}
+setTimeout(syncPanelHeights, 100);
+setTimeout(syncPanelHeights, 400); // second pass after canvas renders
+window.addEventListener('resize', ()=>{ setTimeout(syncPanelHeights,50); });
 
 /* ══════════════════════════════════════════════════════════════
    GENERATIVE BACKGROUND MUSIC — Web Audio API
