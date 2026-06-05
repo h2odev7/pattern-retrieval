@@ -2,195 +2,596 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pattern Retrieval</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PATTERN RETRIEVAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-body{
-  background:#111;
-  color:#0f0;
-  font-family:monospace;
-  display:flex;
-  gap:40px;
-  padding:40px;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#ccc9b8;display:flex;justify-content:center;align-items:flex-start;padding:24px 16px 60px;font-family:'Share Tech Mono',monospace;}
+.page-wrap{display:flex;gap:24px;align-items:flex-start;width:100%;max-width:1120px;}
+.device-col{flex-shrink:0;}
+.panel-col{flex:1;min-width:320px;display:flex;flex-direction:column;}
+
+/* BEZEL */
+.bezel{width:464px;background:#f0ece0;border-radius:36px 36px 30px 30px;border:3px solid #aaa890;box-shadow:0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);overflow:hidden;}
+.top-banner{background:#181c12;border-radius:33px 33px 0 0;border:2.5px solid #c8c490;border-bottom:none;padding:14px 20px 16px;}
+.top-banner-inner{border:1.5px solid #c8c490;border-radius:22px 22px 0 0;padding:10px 14px 12px;}
+.banner-title-row{display:flex;align-items:center;justify-content:center;gap:10px;}
+.banner-dash{flex:1;height:2.5px;background:#c8c490;border-radius:2px;max-width:48px;}
+.banner-title{font-family:'Caveat',cursive;font-size:31px;font-weight:700;color:#d8dba8;letter-spacing:5px;line-height:1;}
+.banner-sub{font-family:'Caveat',cursive;font-size:15px;font-weight:600;color:#d8dba8;text-align:center;letter-spacing:2px;margin-top:6px;}
+.banner-pipe{color:#c8c490;margin:0 8px;}
+.instrument{background:#f5f1e4;padding:18px 16px 16px;border-left:2.5px solid #c8c490;border-right:2.5px solid #c8c490;}
+.gauge-section{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;}
+.gauge-nums{display:flex;align-items:flex-end;font-family:'Caveat',cursive;font-size:12px;color:#2a2c22;margin-bottom:2px;}
+.gauge-nums span{text-align:center;}
+.gauge-ruler{display:flex;align-items:flex-end;height:22px;border-bottom:2.5px solid #2a2c22;padding:0 2px;}
+.tk{background:#2a2c22;display:inline-block;width:2px;margin:0 1.7px;align-self:flex-end;}
+.tk.a{height:16px;}.tk.b{height:10px;}.tk.c{height:13px;}
+.tl-row{display:flex;align-items:center;gap:6px;margin-top:4px;font-family:'Caveat',cursive;font-size:13px;color:#2a2c22;letter-spacing:3px;}
+.tl-dot{width:6px;height:6px;border-radius:50%;background:#2a2c22;flex-shrink:0;}
+.grid-section{display:flex;align-items:flex-start;margin-top:4px;}
+.left-ruler{display:flex;flex-direction:column;align-items:flex-end;margin-right:6px;flex-shrink:0;width:46px;}
+.arm-label{font-family:'Caveat',cursive;font-size:12px;color:#2a2c22;letter-spacing:1px;margin-bottom:3px;align-self:flex-start;margin-left:2px;}
+.ruler-body{display:flex;align-items:flex-start;gap:3px;justify-content:flex-end;}
+.ruler-nums{display:flex;flex-direction:column;align-items:flex-end;position:relative;}
+.rnum{font-family:'Caveat',cursive;font-size:13px;color:#2a2c22;text-align:right;padding-right:2px;line-height:1;position:absolute;}
+.ruler-bracket{width:13px;border-top:2.5px solid #2a2c22;border-right:2.5px solid #2a2c22;border-bottom:2.5px solid #2a2c22;border-radius:0 4px 4px 0;}
 
 /* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(8,50px);
-  gap:4px;
-}
+.cw-grid{display:grid;grid-template-columns:repeat(8,42px);grid-template-rows:repeat(8,42px);gap:0;border:2px solid #333;}
+.cell{width:42px;height:42px;border:1px solid #999;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;overflow:hidden;}
 
-.cell{
-  width:50px;
-  height:50px;
-  background:#222;
-  border:1px solid #444;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
+/* cell types */
+.cell.wall   {background:#f5f1e4;border-color:#ccc;cursor:default;}
+.cell.white  {background:#faf7ed;border-color:#aaa;}           /* normal playable */
+.cell.yellow{background:#f5f1e4;border-color:#ccc;}        /* gold column — empty, just yellow bg */
 
-.cell.wall{ background:#000; cursor:default; }
-.cell.selected{ outline:3px solid #0af; }
+/* interaction states on white cells */
+.cell.white.selected  {outline:3px solid #22aaff;outline-offset:-3px;z-index:5;}
 
-.cell span{
-  font-size:20px;
-  color:#ffa500;
-}
+.cell.white.word-hl   {background:#c8ddf0;}
+.cell.yellow.word-hl  {background:#c8ddf0;}
+.cell.white.correct   {background:#c8eaaa!important;}
 
-/* KEYBOARD */
-.keyboard{
-  display:grid;
-  grid-template-columns:repeat(6,50px);
-  gap:6px;
-}
+.cell.white.revealed  {background:#fff0b0!important;}
+.cell.wrong           {animation:shake .25s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
-.key{
-  width:50px;
-  height:50px;
-  background:#222;
-  border:1px solid #555;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
+.cell-num{position:absolute;top:2px;left:3px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#888;line-height:1;z-index:3;}
+.cell-pixel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;}
 
-.key:hover{ background:#333; }
+/* BOTTOM BANNER */
+.bottom-banner{background:#181c12;border-radius:0 0 27px 27px;border:2.5px solid #c8c490;border-top:none;padding:12px 20px 14px;}
+.bottom-banner-inner{border:1.5px solid #c8c490;border-radius:0 0 17px 17px;padding:8px 14px 10px;}
+.bottom-readout{font-family:'Caveat',cursive;font-size:21px;font-weight:700;color:#d8dba8;text-align:center;letter-spacing:4px;}
+
+/* RIGHT PANEL */
+.stats-bar{background:#111408;border:1px solid #2a3010;border-radius:6px 6px 0 0;display:flex;justify-content:space-around;padding:10px 6px;}
+.stat-item{font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a6020;letter-spacing:1px;text-align:center;}
+.stat-val{display:block;font-size:15px;font-weight:bold;margin-top:2px;}
+.stat-val.red{color:#cc3333;}.stat-val.gv{color:#c8a000;}.stat-val.grn{color:#88cc00;}
+.msg-bar{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:5px 10px;min-height:24px;color:#4a6020;background:#0d1008;border:1px solid #2a3010;border-top:none;}
+.msg-bar.ok{color:#88cc00;}.msg-bar.err{color:#cc4422;}.msg-bar.info{color:#c8a000;}
+
+.keyboard{display:flex;flex-wrap:wrap;gap:3px;padding:10px;background:#0d1008;border:1px solid #2a3010;border-top:none;}
+.key{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#0a0c08;border:1px solid #2a3010;cursor:pointer;overflow:hidden;transition:border-color .1s,background .1s;flex-shrink:0;}
+.key:hover{background:#141808;border-color:#4a6020;}
+.key.used{opacity:0.18;}
+.key.correct-key{border-color:#4a8000;background:#0a1408;}
+
+.btn-row{display:flex;gap:6px;justify-content:center;padding:8px 10px;background:#0d1008;border:1px solid #2a3010;border-top:none;flex-wrap:wrap;}
+.btn{font-family:'Share Tech Mono',monospace;font-size:10px;background:#0a0c08;border:1px solid #2a3010;color:#4a6020;padding:6px 12px;cursor:pointer;letter-spacing:1px;border-radius:2px;transition:all .1s;}
+.btn:hover{background:#141808;border-color:#4a6020;color:#88cc00;}
+.btn.primary{border-color:#2a5000;color:#88aa00;}
+.btn.warn{border-color:#5a4a00;color:#c8a000;}
+.btn.danger{border-color:#5a2000;color:#cc4422;}
+
+.clues-section{display:flex;background:#0d1008;border:1px solid #2a3010;border-top:none;border-radius:0 0 6px 6px;}
+.clue-col{flex:1;padding:10px 12px;}
+.clue-col:first-child{border-right:1px solid #2a3010;}
+.clue-head{font-family:'Share Tech Mono',monospace;font-size:9px;color:#4a6020;letter-spacing:3px;border-bottom:1px solid #2a3010;padding-bottom:4px;margin-bottom:6px;}
+.clue-item{font-family:'Share Tech Mono',monospace;font-size:9.5px;color:#3a5018;padding:3px 4px;margin:2px 0;cursor:pointer;border-left:2px solid transparent;line-height:1.5;transition:all .1s;}
+.clue-item:hover{background:#141808;border-left-color:#4a6020;color:#88cc00;}
+.clue-item.active{border-left-color:#88cc00;background:#101408;color:#aad840;font-weight:bold;}
+.clue-item.done{color:#2a4010;text-decoration:line-through;}
+.clue-num{color:#c8a000;margin-right:4px;}
+
+.win-overlay{display:none;position:fixed;inset:0;background:rgba(4,6,2,.96);z-index:100;flex-direction:column;align-items:center;justify-content:center;}
+.win-overlay.show{display:flex;}
+.win-title{font-family:'Caveat',cursive;font-size:46px;font-weight:700;color:#d8dba8;letter-spacing:5px;margin-bottom:10px;text-align:center;}
+.win-sub{font-family:'Share Tech Mono',monospace;font-size:12px;color:#88aa40;letter-spacing:2px;text-align:center;line-height:2;margin-bottom:28px;}
+.win-btn{font-family:'Share Tech Mono',monospace;font-size:13px;background:transparent;border:1px solid #88aa40;color:#c8dba8;padding:12px 28px;cursor:pointer;letter-spacing:3px;}
+.win-btn:hover{background:rgba(136,170,64,.1);}
+@media(max-width:840px){.page-wrap{flex-direction:column;align-items:center;}.panel-col{width:464px;}}
 </style>
 </head>
-
 <body>
 
-<div id="grid" class="grid"></div>
-<div id="keyboard" class="keyboard"></div>
+<div class="win-overlay" id="winOverlay">
+  <div class="win-title">PATTERN RESTORED</div>
+  <div class="win-sub" id="winSub">CONVERGENCE COMPLETE<br>SCORE: 0000 | TIME: 00:00 | ERRORS: 00</div>
+  <button class="win-btn" onclick="newRun()">&#9655; NEXT RUN</button>
+</div>
+
+<div class="page-wrap">
+  <div class="device-col">
+  <div class="bezel">
+    <div class="top-banner">
+      <div class="top-banner-inner">
+        <div class="banner-title-row"><div class="banner-dash"></div><div class="banner-title">PATTERN RETRIEVAL</div><div class="banner-dash"></div></div>
+        <div class="banner-sub">CONVERGENCE COMPLETE <span class="banner-pipe">|</span> PATTERN RESTORED</div>
+      </div>
+    </div>
+    <div class="instrument">
+      <div class="gauge-section">
+        <div class="gauge-nums">
+          <span style="width:20px;font-size:11px;">&#8304;&#8304;</span>
+          <span style="width:50px;">01</span><span style="width:50px;">02</span><span style="width:50px;">03</span><span style="width:50px;">04</span>
+        </div>
+        <div class="gauge-ruler">
+          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
+          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
+          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
+          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
+          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span><span class="tk a"></span>
+        </div>
+        <div class="tl-row"><div class="tl-dot"></div><span>TARGET LOCKED</span><div class="tl-dot"></div></div>
+      </div>
+      <div class="grid-section">
+        <div class="left-ruler">
+          <div class="arm-label">&#183; ARM</div>
+          <div class="ruler-body">
+            <div class="ruler-nums" id="rulerNums"></div>
+            <div class="ruler-bracket" id="rulerBracket"></div>
+          </div>
+        </div>
+        <div><div class="cw-grid" id="cwGrid"></div></div>
+      </div>
+    </div>
+    <div class="bottom-banner">
+      <div class="bottom-banner-inner">
+        <div class="bottom-readout" id="bottomReadout">&#8212; 1176 | RUN: 0001 | VT100&nbsp;&nbsp; STO:&#183;</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="panel-col">
+    <div class="stats-bar">
+      <div class="stat-item">SCORE<span class="stat-val grn" id="scoreEl">0000</span></div>
+      <div class="stat-item">ERRORS<span class="stat-val red" id="errEl">00</span></div>
+      <div class="stat-item">HINTS<span class="stat-val gv" id="hintEl">03</span></div>
+      <div class="stat-item">TIME<span class="stat-val grn" id="timeEl">00:00</span></div>
+      <div class="stat-item">PROGRESS<span class="stat-val grn" id="progEl">0/0</span></div>
+    </div>
+    <div class="msg-bar" id="msgBar">SELECT A CELL &#8212; TYPE TO FILL</div>
+    <div class="keyboard" id="keyboard"></div>
+    <div class="btn-row">
+      <button class="btn primary" onclick="doHint()">&#9655; HINT [-1]</button>
+      <button class="btn warn" onclick="doReveal()">REVEAL WORD [-50]</button>
+      <button class="btn danger" onclick="newRun()">NEW RUN</button>
+    </div>
+    <div class="clues-section">
+      <div class="clue-col"><div class="clue-head">&#8212; ACROSS</div><div id="cluesA"></div></div>
+      <div class="clue-col"><div class="clue-head">&#8212; DOWN</div><div id="cluesD"></div></div>
+    </div>
+  </div>
+</div>
 
 <script>
+/* ══════════════════════════════════════════════════════
+   PIXEL LETTER MAPS  5×5 dot-matrix
+   ══════════════════════════════════════════════════════ */
+const PX={
+  A:[[0,1,1,1,0],[1,0,0,0,1],[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1]],
+  B:[[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0]],
+  C:[[0,1,1,1,1],[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[0,1,1,1,1]],
+  D:[[1,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,0]],
+  E:[[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,0],[1,0,0,0,0],[1,1,1,1,1]],
+  F:[[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,0],[1,0,0,0,0],[1,0,0,0,0]],
+  G:[[0,1,1,1,1],[1,0,0,0,0],[1,0,1,1,1],[1,0,0,0,1],[0,1,1,1,1]],
+  H:[[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1]],
+  I:[[1,1,1,1,1],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[1,1,1,1,1]],
+  J:[[0,0,0,0,1],[0,0,0,0,1],[0,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+  K:[[1,0,0,1,0],[1,0,1,0,0],[1,1,0,0,0],[1,0,1,0,0],[1,0,0,1,0]],
+  L:[[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[1,1,1,1,1]],
+  M:[[1,0,0,0,1],[1,1,0,1,1],[1,0,1,0,1],[1,0,0,0,1],[1,0,0,0,1]],
+  N:[[1,0,0,0,1],[1,1,0,0,1],[1,0,1,0,1],[1,0,0,1,1],[1,0,0,0,1]],
+  O:[[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+  P:[[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0],[1,0,0,0,0],[1,0,0,0,0]],
+  Q:[[0,1,1,1,0],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,1,0],[0,1,1,0,1]],
+  R:[[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0],[1,0,1,0,0],[1,0,0,1,0]],
+  S:[[0,1,1,1,1],[1,0,0,0,0],[0,1,1,1,0],[0,0,0,0,1],[1,1,1,1,0]],
+  T:[[1,1,1,1,1],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0]],
+  U:[[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+  V:[[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0]],
+  W:[[1,0,0,0,1],[1,0,0,0,1],[1,0,1,0,1],[1,1,0,1,1],[1,0,0,0,1]],
+  X:[[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0],[0,1,0,1,0],[1,0,0,0,1]],
+  Y:[[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0]],
+  Z:[[1,1,1,1,1],[0,0,0,1,0],[0,0,1,0,0],[0,1,0,0,0],[1,1,1,1,1]],
+};
 
-/* ===== DATA ===== */
+/* Build one pixel-art SVG */
+function makeSVG(grid, litCol, darkCol, W, H){
+  const rows=grid.length, cols=grid[0].length;
+  const pad=2, gap=1;
+  const pw=Math.floor((W-pad*2)/cols);
+  const ph=Math.floor((H-pad*2)/rows);
+  let rects='';
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const x=pad+c*(pw+gap), y=pad+r*(ph+gap);
+    rects+=`<rect x="${x}" y="${y}" width="${pw}" height="${ph}" fill="${grid[r][c]?litCol:darkCol}"/>`;
+  }
+  let sl='';
+  for(let r=0;r<rows;r++){const y=pad+r*(ph+gap);
+    for(let sy=y+1;sy<y+ph;sy+=2)
+      sl+=`<line x1="${pad}" y1="${sy}" x2="${W-pad}" y2="${sy}" stroke="rgba(0,0,0,0.25)" stroke-width="0.5"/>`;
+  }
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">${rects}${sl}</svg>`;
+}
 
-const layout = [
-['W','P','P','P','P','P','P','W'],
-['W','W','P','P','P','W','P','P'],
-['W','P','P','P','W','W','P','P'],
-['W','W','P','P','P','P','P','P'],
-['W','P','P','P','W','P','W','P'],
-['W','P','P','P','P','P','P','P'],
-['W','W','P','P','P','W','W','P'],
-['W','W','P','P','P','W','W','W']
+/* Keyboard key SVG — amber on dark */
+function keySVG(ch, litCol){ return PX[ch]?makeSVG(PX[ch],litCol,'#080a06',28,28):''; }
+
+/* Cell letter SVG — typed by player */
+function cellSVG(ch, litCol, darkCol){ return PX[ch]?makeSVG(PX[ch],litCol,darkCol,34,34):''; }
+
+/* ══════════════════════════════════════════════════════
+   GRID DEFINITION
+   Exactly from the hand-drawn art:
+     W = black wall
+     Y = yellow/gold empty cell (the spine column, col 2, rows 0-5)
+     P = plain white playable cell
+   No letters pre-filled. Board starts 100% empty.
+   ══════════════════════════════════════════════════════ */
+const ROWS=8, COLS=8;
+
+//        col: 0    1    2    3    4    5    6    7
+const LAYOUT=[
+  /* r0 */ ['W', 'P', 'Y', 'P', 'P', 'P', 'P', 'W'],
+  /* r1 */ ['W', 'W', 'Y', 'P', 'P', 'W', 'P', 'P'],
+  /* r2 */ ['W', 'P', 'Y', 'P', 'W', 'W', 'P', 'P'],
+  /* r3 */ ['W', 'W', 'Y', 'P', 'P', 'P', 'P', 'P'],
+  /* r4 */ ['W', 'P', 'Y', 'P', 'W', 'P', 'W', 'P'],
+  /* r5 */ ['W', 'P', 'Y', 'P', 'P', 'P', 'P', 'P'],
+  /* r6 */ ['W', 'W', 'P', 'P', 'P', 'W', 'W', 'P'],
+  /* r7 */ ['W', 'W', 'P', 'P', 'P', 'W', 'W', 'W'],
 ];
 
-const answers = [
-['#','S','E','N','D','I','T','#'],
-['#','#','E','O','E','#','E','N'],
-['#','I','E','D','#','#','M','O'],
-['#','#','E','E','R','R','I','T'],
-['#','T','E','R','#','O','#','H'],
-['#','E','E','M','S','G','N','E'],
-['#','#','T','A','P','#','#','R'],
-['#','#','O','P','S','#','#','#']
+/* Complete crossword solution.
+   Every P and Y cell has its answer letter here.
+   '#' = wall.
+   The answers spell SEND IT across row 0 (cols 1-6).        */
+const ANSWERS=[
+  ['#','S','E','N','D','I','T','#'],
+  ['#','#','E','O','E','#','E','N'],
+  ['#','I','E','D','#','#','M','O'],
+  ['#','#','E','E','R','R','I','T'],
+  ['#','T','E','R','#','O','#','H'],
+  ['#','E','E','M','S','G','N','E'],
+  ['#','#','T','A','P','#','#','R'],
+  ['#','#','O','P','S','#','#','#'],
 ];
 
-/* ===== STATE ===== */
+const CLUE_DATA={
+  across:[
+    {num:1, clue:"Transmit — send it out",      row:0,col:1,len:6},
+    {num:3, clue:"Receive decode node",          row:1,col:2,len:4},
+    {num:5, clue:"Encode and deliver",           row:2,col:1,len:3},
+    {num:7, clue:"Route relay scan",             row:3,col:2,len:6},
+    {num:9, clue:"Initiate transmission",        row:4,col:1,len:2},
+    {num:11,clue:"Signal origin log burst",      row:5,col:1,len:7},
+    {num:13,clue:"Header tap address",           row:6,col:2,len:3},
+    {num:15,clue:"Buffer overflow routine",      row:7,col:2,len:3},
+  ],
+  down:[
+    {num:2, clue:"The gold spine column",        row:0,col:2,len:6},
+    {num:4, clue:"Origin data stream",           row:0,col:3,len:8},
+    {num:6, clue:"Bit pattern — first signal",   row:0,col:4,len:6},
+    {num:8, clue:"Transmission layer node",      row:1,col:6,len:6},
+    {num:10,clue:"Adjacent relay output",        row:1,col:7,len:6},
+    {num:12,clue:"Routing entry (abbr)",         row:3,col:5,len:3},
+  ]
+};
 
-let selected = null;
+/* ── State ── */
+let cells=[],wordMap={},cellWords={};
+let selected=null,direction='across';
+let errors=0,hints=3,score=0,run=1;
+let timerSec=0,timerInt=null;
+let completedWords=new Set(),usedLetters=new Set(),correctLetters=new Set();
 
-let cells = layout.map((row,r)=>
-  row.map((t,c)=>({
-    wall: t === 'W',
-    answer: answers[r][c],
-    guess: ''
-  }))
-);
+function initCells(){
+  cells=[];
+  for(let r=0;r<ROWS;r++){cells[r]=[];
+    for(let c=0;c<COLS;c++){
+      const t=LAYOUT[r][c],letter=ANSWERS[r][c]==='#'?'':ANSWERS[r][c];
+      cells[r][c]={
+        wall:   t==='W',
+        yellow: t==='Y',   // gold column — just background, no pre-fill
+        letter,            // answer (hidden from player)
+        guess:  '',        // what player typed
+        correct:false,     // confirmed correct
+        revealed:false,    // shown by hint
+      };
+    }
+  }
+}
 
-/* ===== RENDER ===== */
+function buildWordMap(){
+  wordMap={};cellWords={};
+  const all=[...CLUE_DATA.across.map(c=>({...c,dir:'across'})),...CLUE_DATA.down.map(c=>({...c,dir:'down'}))];
+  all.forEach(cl=>{
+    const k=`${cl.num}-${cl.dir}`;wordMap[k]={...cl,cells:[]};
+    for(let i=0;i<cl.len;i++){
+      const wr=cl.dir==='across'?cl.row:cl.row+i,wc=cl.dir==='across'?cl.col+i:cl.col;
+      if(wr<ROWS&&wc<COLS&&!cells[wr][wc].wall){
+        wordMap[k].cells.push({r:wr,c:wc});
+        const ck=`${wr},${wc}`;if(!cellWords[ck])cellWords[ck]=[];cellWords[ck].push(k);
+      }
+    }
+  });
+}
 
+function clueStartMap(){
+  const m={};
+  [...CLUE_DATA.across,...CLUE_DATA.down].forEach(cl=>{
+    const k=`${cl.row},${cl.col}`;if(!m[k]||m[k]>cl.num)m[k]=cl.num;
+  });
+  return m;
+}
+
+/* ── Render grid ── */
 function renderGrid(){
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
+  const g=document.getElementById('cwGrid');g.innerHTML='';
+  const cs=clueStartMap();
 
-  cells.forEach((row,r)=>{
-    row.forEach((cell,c)=>{
+  for(let r=0;r<ROWS;r++){for(let c=0;c<COLS;c++){
+    const cell=cells[r][c],div=document.createElement('div');
+    div.className='cell';div.dataset.r=r;div.dataset.c=c;
 
-      const div = document.createElement('div');
-      div.className = 'cell';
+    if(cell.wall){
+      div.classList.add('wall');
+    } else {
+      /* base background */
+      div.classList.add(cell.yellow?'yellow':'white');
 
-      if(cell.wall){
-        div.classList.add('wall');
-      }else{
+      /* state classes */
+      if(cell.correct)  div.classList.add('correct');
+      if(cell.revealed) div.classList.add('revealed');
 
-        if(selected && selected.r===r && selected.c===c){
-          div.classList.add('selected');
+      /* clue number */
+      const ck=`${r},${c}`;
+      if(cs[ck]){const ni=document.createElement('span');ni.className='cell-num';ni.textContent=cs[ck];div.appendChild(ni);}
+
+      /* pixel-art letter — only if something to show */
+      const showLetter = cell.correct ? cell.letter
+                       : cell.revealed ? cell.letter
+                       : cell.guess   ? cell.guess
+                       : null;
+
+      if(showLetter && PX[showLetter]){
+        const pw=document.createElement('div');pw.className='cell-pixel';
+        let litCol,darkCol;
+        if(cell.correct){
+          litCol='#44cc00'; darkCol='#0a1a08';
+        } else if(cell.revealed){
+          litCol='#e8c800'; darkCol='#181400';
+        } else {
+          /* typed but unconfirmed */
+          litCol='#e8a000'; darkCol='#100e00';
         }
-
-        if(cell.guess){
-          const span = document.createElement('span');
-          span.textContent = cell.guess;
-          div.appendChild(span);
-        }
-
-        div.onclick = ()=> selectCell(r,c);
+        pw.innerHTML=cellSVG(showLetter,litCol,darkCol);
+        div.appendChild(pw);
       }
 
-      grid.appendChild(div);
+      div.addEventListener('click',()=>clickCell(r,c));
+    }
+    g.appendChild(div);
+  }}
+
+  const gridH=ROWS*42;
+  const rb=document.getElementById('rulerBracket');if(rb)rb.style.height=gridH+'px';
+  setRulerNums(gridH);highlightWord();updateProgress();
+}
+
+function setRulerNums(h){
+  const el=document.getElementById('rulerNums');if(!el)return;
+  el.innerHTML='';el.style.position='relative';el.style.height=h+'px';
+  ['0','01','1','02','2','03','3'].forEach((lbl,i,arr)=>{
+    const s=document.createElement('div');s.className='rnum';s.textContent=lbl;
+    s.style.top=Math.round((i/(arr.length-1))*(h-16))+'px';el.appendChild(s);
+  });
+}
+
+function highlightWord(){
+  document.querySelectorAll('.cell').forEach(el=>{
+    el.classList.remove('word-hl','selected');el.style.outline='';
+  });
+  if(!selected)return;
+  const{r,c}=selected;
+  const wks=cellWords[`${r},${c}`]||[],ak=wks.find(k=>k.endsWith(direction))||wks[0];
+  if(ak&&wordMap[ak])wordMap[ak].cells.forEach(({r:wr,c:wc})=>{
+    const el=document.querySelectorAll('.cell')[wr*COLS+wc];
+    if(el&&!el.classList.contains('wall'))el.classList.add('word-hl');
+  });
+  const se=document.querySelectorAll('.cell')[r*COLS+c];
+  if(se){se.classList.add('selected');se.style.outline='3px solid #22aaff';se.style.outlineOffset='-3px';}
+}
+
+function renderKeyboard(){
+  const kb=document.getElementById('keyboard');kb.innerHTML='';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(ch=>{
+    const k=document.createElement('div');k.className='key';
+    let litCol='#e8a000';
+    if(correctLetters.has(ch)){k.classList.add('correct-key');litCol='#44cc00';}
+    else if(usedLetters.has(ch)){k.classList.add('used');litCol='#2a1400';}
+    k.innerHTML=keySVG(ch,litCol);
+    k.onclick=()=>handleLetter(ch);
+    kb.appendChild(k);
+  });
+}
+
+function renderClues(){
+  ['A','D'].forEach(x=>{
+    const el=document.getElementById('clues'+x);el.innerHTML='';
+    const arr=x==='A'?CLUE_DATA.across:CLUE_DATA.down,ds=x==='A'?'across':'down';
+    arr.forEach(cl=>{
+      const k=`${cl.num}-${ds}`,d=document.createElement('div');
+      d.className='clue-item';d.id='ci-'+k;
+      if(completedWords.has(k))d.classList.add('done');
+      d.innerHTML=`<span class="clue-num">${cl.num}.</span>${cl.clue}`;
+      d.onclick=()=>{direction=ds;clickCell(cl.row,cl.col);};
+      el.appendChild(d);
     });
   });
 }
 
-/* ===== KEYBOARD ===== */
+function updateStats(){
+  document.getElementById('scoreEl').textContent=score.toString().padStart(4,'0');
+  document.getElementById('errEl').textContent=errors.toString().padStart(2,'0');
+  document.getElementById('hintEl').textContent=hints.toString().padStart(2,'0');
+  renderKeyboard();updateProgress();
+}
+function updateProgress(){
+  let total=0,done=0;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const cl=cells[r][c];if(!cl.wall){total++;if(cl.correct||cl.revealed)done++;}
+  }
+  document.getElementById('progEl').textContent=`${done}/${total}`;
+}
+function setMsg(t,type=''){const el=document.getElementById('msgBar');el.textContent=t;el.className='msg-bar'+(type?' '+type:'');}
 
-function renderKeyboard(){
-  const kb = document.getElementById('keyboard');
-  kb.innerHTML = '';
+/* ── Interaction ── */
+function clickCell(r,c){
+  const cell=cells[r][c];if(cell.wall)return;
+  if(selected&&selected.r===r&&selected.c===c)direction=direction==='across'?'down':'across';
+  selected={r,c};highlightWord();showActiveClue(r,c);setMsg('TYPE A LETTER TO FILL');
+}
+function showActiveClue(r,c){
+  document.querySelectorAll('.clue-item').forEach(el=>el.classList.remove('active'));
+  (cellWords[`${r},${c}`]||[]).forEach(k=>{const el=document.getElementById('ci-'+k);if(el)el.classList.add('active');});
+}
 
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(letter=>{
-    const key = document.createElement('div');
-    key.className = 'key';
-    key.textContent = letter;
+function handleLetter(letter){
+  if(!selected){setMsg('SELECT A CELL FIRST','err');return;}
+  const{r,c}=selected,cell=cells[r][c];
+  if(cell.wall||cell.correct||cell.revealed){advance();return;}
+  letter=letter.toUpperCase();
+  const ok=letter===cell.letter;
+  cell.guess=letter;usedLetters.add(letter);
 
-    key.onclick = ()=> typeLetter(letter);
+  if(ok){
+    cell.correct=true;correctLetters.add(letter);score+=10;
+    setMsg('SIGNAL CONFIRMED','ok');renderGrid();updateStats();checkWordDone(r,c);checkWin();advance();
+  } else {
+    errors++;score=Math.max(0,score-5);
+    setMsg('NOISE DETECTED','err');
+    /* flash red pixel then clear */
+    const idx=r*COLS+c;
+    const el=document.querySelectorAll('.cell')[idx];
+    if(el){
+      el.classList.add('wrong');
+      /* inject red pixel letter briefly */
+      let pw=el.querySelector('.cell-pixel');
+      if(!pw){pw=document.createElement('div');pw.className='cell-pixel';el.appendChild(pw);}
+      pw.innerHTML=cellSVG(letter,'#ee3322','#180808');
+      setTimeout(()=>{
+        el.classList.remove('wrong');
+        cell.guess='';
+        renderGrid();
+      },500);
+    }
+    updateStats();
+  }
+}
 
-    kb.appendChild(key);
+function advance(){
+  if(!selected)return;
+  const{r,c}=selected;
+  const wks=cellWords[`${r},${c}`]||[],ak=wks.find(k=>k.endsWith(direction))||wks[0];
+  if(!ak||!wordMap[ak])return;
+  const wcs=wordMap[ak].cells,idx=wcs.findIndex(x=>x.r===r&&x.c===c);
+  for(let i=idx+1;i<wcs.length;i++){
+    const nc=cells[wcs[i].r][wcs[i].c];
+    if(!nc.correct&&!nc.revealed){selected={r:wcs[i].r,c:wcs[i].c};highlightWord();showActiveClue(wcs[i].r,wcs[i].c);return;}
+  }
+}
+
+function checkWordDone(r,c){
+  (cellWords[`${r},${c}`]||[]).forEach(k=>{
+    if(completedWords.has(k))return;
+    if(wordMap[k].cells.every(({r:wr,c:wc})=>{const cl=cells[wr][wc];return cl.correct||cl.revealed;})){
+      completedWords.add(k);score+=25;setMsg('WORD RETRIEVED +25','ok');
+      const el=document.getElementById('ci-'+k);if(el)el.classList.add('done');
+    }
   });
 }
-
-/* ===== LOGIC ===== */
-
-function selectCell(r,c){
-  if(cells[r][c].wall) return;
-
-  selected = {r,c};
-  renderGrid();
-}
-
-function typeLetter(letter){
-  if(!selected) return;
-
-  const cell = cells[selected.r][selected.c];
-
-  cell.guess = letter;
-
-  // check correctness
-  if(letter === cell.answer){
-    cell.correct = true;
-  }else{
-    // flash wrong
-    setTimeout(()=>{
-      cell.guess = '';
-      renderGrid();
-    },300);
+function checkWin(){
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const cl=cells[r][c];if(!cl.wall&&!cl.correct&&!cl.revealed)return;
   }
-
-  renderGrid();
+  clearInterval(timerInt);
+  const m=Math.floor(timerSec/60).toString().padStart(2,'0'),s=(timerSec%60).toString().padStart(2,'0');
+  document.getElementById('winSub').innerHTML=`CONVERGENCE COMPLETE<br>SCORE: ${score.toString().padStart(4,'0')} | TIME: ${m}:${s} | ERRORS: ${errors.toString().padStart(2,'0')}`;
+  document.getElementById('winOverlay').classList.add('show');
 }
 
-/* ===== INIT ===== */
+function doHint(){
+  if(hints<=0){setMsg('NO HINTS REMAINING','err');return;}
+  if(!selected){setMsg('SELECT A CELL FIRST','err');return;}
+  const{r,c}=selected,cell=cells[r][c];
+  if(cell.wall||cell.correct||cell.revealed){setMsg('ALREADY SOLVED');return;}
+  hints--;cell.revealed=true;score=Math.max(0,score-5);
+  renderGrid();updateStats();checkWordDone(r,c);checkWin();
+  setMsg('HINT USED','info');advance();
+}
+function doReveal(){
+  if(score<50){setMsg('NEED 50 POINTS TO REVEAL','err');return;}
+  if(!selected){setMsg('SELECT A CELL IN THE WORD','err');return;}
+  const{r,c}=selected,ck=`${r},${c}`;
+  const ak=(cellWords[ck]||[]).find(k=>k.endsWith(direction))||(cellWords[ck]||[])[0];
+  if(!ak){setMsg('NO ACTIVE WORD','err');return;}
+  score-=50;
+  wordMap[ak].cells.forEach(({r:wr,c:wc})=>{const cl=cells[wr][wc];if(!cl.correct)cl.revealed=true;});
+  completedWords.add(ak);
+  const el=document.getElementById('ci-'+ak);if(el)el.classList.add('done');
+  renderGrid();updateStats();checkWin();setMsg('WORD RETRIEVED [-50]','info');
+}
+function newRun(){
+  clearInterval(timerInt);
+  initCells();buildWordMap();
+  selected=null;direction='across';
+  errors=0;hints=3;score=0;timerSec=0;
+  completedWords=new Set();usedLetters=new Set();correctLetters=new Set();run++;
+  document.getElementById('winOverlay').classList.remove('show');
+  document.getElementById('bottomReadout').textContent=`\u2014 1176 | RUN: ${run.toString().padStart(4,'0')} | VT100\u00a0\u00a0 STO:\u00b7`;
+  timerInt=setInterval(tick,1000);
+  renderGrid();renderClues();renderKeyboard();updateStats();
+  setMsg('NEW RUN \u2014 SELECT A CELL');
+}
+function tick(){
+  timerSec++;
+  const m=Math.floor(timerSec/60).toString().padStart(2,'0'),s=(timerSec%60).toString().padStart(2,'0');
+  document.getElementById('timeEl').textContent=`${m}:${s}`;
+}
 
-renderGrid();
-renderKeyboard();
+/* ── Boot ── */
+initCells();buildWordMap();
+timerInt=setInterval(tick,1000);
+renderGrid();renderClues();renderKeyboard();updateStats();
 
+document.addEventListener('keydown',e=>{
+  if(e.key==='Backspace'){
+    if(selected){const{r,c}=selected,cl=cells[r][c];if(!cl.correct&&!cl.revealed&&cl.guess){cl.guess='';renderGrid();}}
+    return;
+  }
+  if(e.key==='Tab'){e.preventDefault();advance();return;}
+  if(e.key==='ArrowRight'){direction='across';if(selected)highlightWord();return;}
+  if(e.key==='ArrowDown'){direction='down';if(selected)highlightWord();return;}
+  const l=e.key.toUpperCase();if(/^[A-Z]$/.test(l))handleLetter(l);
+});
 </script>
 </body>
 </html>
