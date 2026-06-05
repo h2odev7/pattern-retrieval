@@ -125,26 +125,11 @@ body{min-height:100vh;background:#ccc9b8;display:flex;justify-content:center;ali
     </div>
     <div class="instrument">
       <div class="gauge-section">
-        <div class="gauge-nums">
-          <span style="width:20px;font-size:11px;">&#8304;&#8304;</span>
-          <span style="width:50px;">01</span><span style="width:50px;">02</span><span style="width:50px;">03</span><span style="width:50px;">04</span>
-        </div>
-        <div class="gauge-ruler">
-          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
-          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
-          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
-          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span>
-          <span class="tk a"></span><span class="tk b"></span><span class="tk b"></span><span class="tk c"></span><span class="tk b"></span><span class="tk b"></span><span class="tk a"></span>
-        </div>
-        <div class="tl-row"><div class="tl-dot"></div><span>TARGET LOCKED</span><div class="tl-dot"></div></div>
+        <canvas id="gaugeCanvas" width="310" height="64" style="display:block;margin:0 auto;"></canvas>
       </div>
       <div class="grid-section">
         <div class="left-ruler">
-          <div class="arm-label">&#183; ARM</div>
-          <div class="ruler-body">
-            <div class="ruler-nums" id="rulerNums"></div>
-            <div class="ruler-bracket" id="rulerBracket"></div>
-          </div>
+          <canvas id="rulerCanvas" width="52" height="340" style="display:block;"></canvas>
         </div>
         <div><div class="cw-grid" id="cwGrid"></div></div>
       </div>
@@ -513,19 +498,10 @@ function renderGrid(){
     g.appendChild(div);
   }}
 
-  const gridH=ROWS*42;
-  const rb=document.getElementById('rulerBracket');if(rb)rb.style.height=gridH+'px';
-  setRulerNums(gridH);updateProgress();
+  updateProgress();
 }
 
-function setRulerNums(h){
-  const el=document.getElementById('rulerNums');if(!el)return;
-  el.innerHTML='';el.style.position='relative';el.style.height=h+'px';
-  ['0','01','1','02','2','03','3'].forEach((lbl,i,arr)=>{
-    const s=document.createElement('div');s.className='rnum';s.textContent=lbl;
-    s.style.top=Math.round((i/(arr.length-1))*(h-16))+'px';el.appendChild(s);
-  });
-}
+function setRulerNums(h){ /* handled by canvas ruler */ }
 
 function highlightWord(){ renderGrid(); }
 
@@ -717,6 +693,199 @@ function tick(){
   const m=Math.floor(timerSec/60).toString().padStart(2,'0'),s=(timerSec%60).toString().padStart(2,'0');
   document.getElementById('timeEl').textContent=`${m}:${s}`;
 }
+
+/* ══════════════════════════════════════════════════════
+   GAUGE + RULER ANIMATION
+   ══════════════════════════════════════════════════════ */
+
+(function initInstruments(){
+  // ── GAUGE CANVAS ──
+  const gc = document.getElementById('gaugeCanvas');
+  if(!gc) return;
+  const gctx = gc.getContext('2d');
+  const GW = gc.width, GH = gc.height;
+
+  // Needle state — oscillates left/right with slight random drift
+  let needlePos = 0.5;       // 0..1 across the ruler
+  let needleVel = 0.003;
+  let needleTarget = 0.5;
+  let lockFlash = 0;         // flash counter for TARGET LOCKED text
+  let signalStrength = 0.5;  // drives glowing ticks
+
+  function drawGauge(t){
+    gctx.clearRect(0,0,GW,GH);
+
+    const tickColor  = '#4a5a38';
+    const litColor   = '#88cc44';
+    const textColor  = '#6a7a50';
+    const needleCol  = '#ccee44';
+    const rulerY     = 36;
+
+    // ── Numbers row ──
+    gctx.fillStyle = textColor;
+    gctx.font = '11px "Share Tech Mono"';
+    const labels = ['00','01','02','03','04'];
+    labels.forEach((lbl,i)=>{
+      const x = 20 + i * 68;
+      gctx.fillText(lbl, x-6, 12);
+    });
+
+    // ── Ruler ticks ──
+    // Each major section between labels has minor ticks
+    for(let i=0;i<=280;i+=4){
+      const x = 15 + i;
+      const isMajor  = i % 68 === 0;
+      const isMid    = i % 34 === 0;
+      const h        = isMajor ? 14 : isMid ? 10 : 6;
+      // Glow ticks near the needle
+      const dist = Math.abs((x/GW) - needlePos);
+      const glow = Math.max(0, 1 - dist*8);
+      const alpha = 0.4 + glow*0.6;
+      gctx.fillStyle = glow > 0.3
+        ? `rgba(${Math.round(136+glow*80)},${Math.round(204+glow*40)},${Math.round(68+glow*20)},${alpha})`
+        : `rgba(74,90,56,${alpha})`;
+      gctx.fillRect(x, rulerY - h, 2, h);
+    }
+
+    // ── Ruler baseline ──
+    gctx.strokeStyle = '#4a5a38';
+    gctx.lineWidth = 1.5;
+    gctx.beginPath();
+    gctx.moveTo(14, rulerY);
+    gctx.lineTo(298, rulerY);
+    gctx.stroke();
+
+    // ── Needle ──
+    const nx = 15 + needlePos * 280;
+    // Glow behind needle
+    const grad = gctx.createLinearGradient(nx-12, 0, nx+12, 0);
+    grad.addColorStop(0,   'rgba(136,204,68,0)');
+    grad.addColorStop(0.5, 'rgba(136,204,68,0.35)');
+    grad.addColorStop(1,   'rgba(136,204,68,0)');
+    gctx.fillStyle = grad;
+    gctx.fillRect(nx-12, rulerY-20, 24, 20);
+    // Needle line
+    gctx.strokeStyle = needleCol;
+    gctx.lineWidth = 2;
+    gctx.shadowColor = needleCol;
+    gctx.shadowBlur = 6;
+    gctx.beginPath();
+    gctx.moveTo(nx, rulerY-16);
+    gctx.lineTo(nx, rulerY+2);
+    gctx.stroke();
+    gctx.shadowBlur = 0;
+
+    // ── TARGET LOCKED text ──
+    lockFlash = (lockFlash + 1) % 120;
+    const tlAlpha = 0.55 + 0.45 * Math.sin(t * 0.04);  // slow pulse
+    const dotBright = lockFlash < 60 ? 1.0 : 0.3;       // dot blink
+    gctx.font = 'bold 12px "Share Tech Mono"';
+    gctx.textAlign = 'center';
+    gctx.fillStyle = `rgba(136,204,68,${tlAlpha})`;
+    gctx.shadowColor = 'rgba(136,204,68,0.6)';
+    gctx.shadowBlur = tlAlpha > 0.8 ? 8 : 0;
+    gctx.fillText('TARGET LOCKED', GW/2, GH-4);
+    gctx.shadowBlur = 0;
+    // Dots
+    gctx.fillStyle = `rgba(136,204,68,${dotBright})`;
+    gctx.beginPath();gctx.arc(GW/2 - 72, GH-8, 3, 0, Math.PI*2);gctx.fill();
+    gctx.beginPath();gctx.arc(GW/2 + 72, GH-8, 3, 0, Math.PI*2);gctx.fill();
+    gctx.textAlign = 'left';
+  }
+
+  // ── RULER CANVAS ──
+  const rc = document.getElementById('rulerCanvas');
+  if(!rc) return;
+  const rctx = rc.getContext('2d');
+  const RW = rc.width, RH = rc.height;
+  const rulerLabels = ['0','01','1','02','2','03','3'];
+
+  let scanY = 0;        // scanning line position
+  let scanDir = 1;
+
+  function drawRuler(t){
+    rctx.clearRect(0,0,RW,RH);
+
+    // ARM label
+    rctx.fillStyle = '#6a7a50';
+    rctx.font = '11px "Share Tech Mono"';
+    rctx.fillText('· ARM', 2, 12);
+
+    // Bracket — right side vertical line with top/bottom serifs
+    const bx = RW - 8;
+    const bTop = 18, bBot = RH - 4;
+    rctx.strokeStyle = '#4a5a38';
+    rctx.lineWidth = 2;
+    rctx.beginPath();
+    rctx.moveTo(bx-8, bTop);  // top serif
+    rctx.lineTo(bx,   bTop);
+    rctx.lineTo(bx,   bBot);  // vertical
+    rctx.lineTo(bx-8, bBot);  // bottom serif
+    rctx.stroke();
+
+    // Labels with scan-glow effect
+    const labelH = (bBot - bTop) / (rulerLabels.length - 1);
+    rulerLabels.forEach((lbl, i)=>{
+      const y = bTop + i * labelH;
+      // Distance from scan line
+      const dist = Math.abs(y - scanY);
+      const glow = Math.max(0, 1 - dist / 60);
+      const alpha = 0.45 + glow * 0.55;
+      rctx.fillStyle = glow > 0.4
+        ? `rgba(136,204,68,${alpha})`
+        : `rgba(106,122,80,${alpha})`;
+      rctx.font = glow > 0.5 ? 'bold 12px "Share Tech Mono"' : '11px "Share Tech Mono"';
+      rctx.shadowColor = 'rgba(136,204,68,0.7)';
+      rctx.shadowBlur = glow * 10;
+      rctx.fillText(lbl, 2, y + 4);
+      rctx.shadowBlur = 0;
+
+      // Small tick mark on bracket
+      const dist2 = Math.abs(y - scanY);
+      const tAlpha = 0.3 + Math.max(0,1-dist2/50)*0.7;
+      rctx.strokeStyle = `rgba(136,204,68,${tAlpha})`;
+      rctx.lineWidth = 1.5;
+      rctx.beginPath();
+      rctx.moveTo(bx-10, y);
+      rctx.lineTo(bx, y);
+      rctx.stroke();
+    });
+
+    // Scan line — a bright horizontal streak that moves up/down
+    const scanAlpha = 0.6 + 0.4 * Math.sin(t * 0.05);
+    const sGrad = rctx.createLinearGradient(0, scanY-3, 0, scanY+3);
+    sGrad.addColorStop(0,   'rgba(136,204,68,0)');
+    sGrad.addColorStop(0.5, `rgba(136,204,68,${scanAlpha})`);
+    sGrad.addColorStop(1,   'rgba(136,204,68,0)');
+    rctx.fillStyle = sGrad;
+    rctx.fillRect(0, scanY-3, RW-10, 6);
+  }
+
+  // ── ANIMATION LOOP ──
+  let frame = 0;
+  function animInstruments(){
+    frame++;
+
+    // Needle: slowly drifts toward target, target wanders
+    if(frame % 80 === 0){
+      needleTarget = 0.3 + Math.random() * 0.4;  // stay in middle zone
+    }
+    needleVel += (needleTarget - needlePos) * 0.001;
+    needleVel *= 0.94;  // damping
+    needlePos += needleVel;
+    needlePos = Math.max(0.05, Math.min(0.95, needlePos));
+
+    // Scan line: bounces top to bottom
+    scanY += scanDir * 1.2;
+    const rc2 = document.getElementById('rulerCanvas');
+    if(rc2 && (scanY > rc2.height - 10 || scanY < 18)) scanDir *= -1;
+
+    drawGauge(frame);
+    drawRuler(frame);
+    requestAnimationFrame(animInstruments);
+  }
+  animInstruments();
+})();
 
 /* ── Boot ── */
 initCells();buildWordMap();
