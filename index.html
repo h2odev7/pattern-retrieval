@@ -28,7 +28,7 @@ body{
   position:relative;
   z-index:1;
 }
-.page-wrap{display:flex;gap:20px;align-items:flex-start;width:100%;max-width:1060px;padding:24px 20px 0;box-sizing:border-box;position:relative;z-index:1;}
+.page-wrap{display:flex;gap:20px;align-items:flex-start;width:100%;max-width:1060px;padding:24px 20px 0;box-sizing:border-box;}
 .device-col{flex-shrink:0;position:relative;z-index:1;}
 .panel-col{flex:1;min-width:420px;display:flex;flex-direction:column;overflow:hidden;align-self:stretch;position:relative;z-index:1;}
 
@@ -128,14 +128,14 @@ body{
 </head>
 <body>
 
-<canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.15;"></canvas>
+<canvas id="bgCanvas" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;opacity:0.55;"></canvas>
 <div class="win-overlay" id="winOverlay">
   <div class="win-title">PATTERN RESTORED</div>
   <div class="win-sub" id="winSub">CONVERGENCE COMPLETE<br>SCORE: 0000 | TIME: 00:00 | ERRORS: 00</div>
   <button class="win-btn" onclick="newRun()">&#9655; NEXT RUN</button>
 </div>
 
-<div style="position:relative;z-index:1;width:100%;background:#ccc9b8;display:flex;justify-content:center;padding-bottom:0;"><div class="page-wrap">
+<div class="page-wrap">
   <div class="device-col">
   <div class="bezel">
     <div class="top-banner">
@@ -186,7 +186,7 @@ body{
   </div>
 </div>
 
-<div style="position:relative;z-index:1;width:100%;background:#ccc9b8;padding:24px 0 8px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;">
+<div style="position:relative;z-index:1;width:100%;padding:24px 0 8px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;">
   <a href="https://patternretrieval.app/index.html"
      target="_blank"
      style="color:#3a5a30;text-decoration:none;border-bottom:1px solid #2a4020;padding-bottom:2px;transition:color .2s,border-color .2s;"
@@ -951,8 +951,11 @@ function tick(){
   img.onload = function(){
     // Set canvas to window size
     function resize(){
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const size = Math.min(window.innerWidth, window.innerHeight) * 0.82;
+      canvas.width  = size;
+      canvas.height = size;
+      canvas.style.width  = size + 'px';
+      canvas.style.height = size + 'px';
     }
     resize();
     window.addEventListener('resize', resize);
@@ -1011,11 +1014,11 @@ function tick(){
       const W = canvas.width, H = canvas.height;
       ctx.clearRect(0, 0, W, H);
 
-      // Center the grid on screen
-      const cellW = Math.min(W, H) * 0.85 / GRID_COLS;
-      const cellH = Math.min(W, H) * 0.85 / GRID_ROWS;
-      const offX  = (W - GRID_COLS * cellW) / 2;
-      const offY  = (H - GRID_ROWS * cellH) / 2;
+      // Fill entire canvas
+      const cellW = W / GRID_COLS;
+      const cellH = H / GRID_ROWS;
+      const offX  = 0;
+      const offY  = 0;
 
       for(let row = 0; row < GRID_ROWS; row++){
         for(let col = 0; col < GRID_COLS; col++){
